@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rock-Paper-Scissors Online</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<link rel="stylesheet" type="text/css" href="assets/css/reset.css">	
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">	
+</head>
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<h1>Rock Paper Scissors Online</h1>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<h2>Waiting for Players</h2>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<h3>Player 1 is: <span id="p1"></span></h3>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<h3>Player 2 is: <span id="p2"></span></h3>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<input type="playerName" name=""></h1>
+				<button class="nameSubmit">Submit</button>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<button class="clearButton">Clear</button>
+			</div>
+		</div>
+	</div>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+	<script>
+	// Initialize Firebase
+	// var config = {
+	// 	apiKey: "AIzaSyBfHzgSuQIsvGGusmlFAJziSECE7O4mbg4",
+	// 	authDomain: "rps-multiplayer-e9d13.firebaseapp.com",
+	// 	databaseURL: "https://rps-multiplayer-e9d13.firebaseio.com",
+	// 	projectId: "rps-multiplayer-e9d13",
+	// 	storageBucket: "rps-multiplayer-e9d13.appspot.com",
+	// 	messagingSenderId: "111624067463"
+	// };
+	// firebase.initializeApp(config);
+	</script>
+
+	<script src="assets/javascript/game.js"></script>
+</body>
+</html>
