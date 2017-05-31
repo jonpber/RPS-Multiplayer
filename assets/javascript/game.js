@@ -1,49 +1,65 @@
 $(function(){
+	var dbURL = "https://rps-multiplayer-e9d13.firebaseio.com";
 
-  var config = {
-    apiKey: "AIzaSyBfHzgSuQIsvGGusmlFAJziSECE7O4mbg4",
-    authDomain: "rps-multiplayer-e9d13.firebaseapp.com",
-    databaseURL: "https://rps-multiplayer-e9d13.firebaseio.com",
-    storageBucket: "rps-multiplayer-e9d13.appspot.com"
-  };
+	var config = {
+		apiKey: "AIzaSyBfHzgSuQIsvGGusmlFAJziSECE7O4mbg4",
+		authDomain: "rps-multiplayer-e9d13.firebaseapp.com",
+		databaseURL: dbURL,
+		storageBucket: "rps-multiplayer-e9d13.appspot.com"
+	};
 
-  firebase.initializeApp(config);
+	firebase.initializeApp(config);
 
   // Get a reference to the database service
 	var database = firebase.database();
+	var myUserID;
+	var amOnline = database.ref(".info/connected");
+	var userRef;
 
-	function addPlayer(num, name) {
-	  database.ref('Players/Player' + num).set({
+
+	amOnline.on('value', function(snapshot) {
+  		if (snapshot.val()) {
+    		database.ref('Players/Player' + myUserID).onDisconnect().remove();
+    		// userRef.set(true);
+  		} 
+  		else {
+    		// database.ref('Players/Player' + myUserID).remove();
+    		// database.ref('presence/' + myUserID).remove();
+  		}
+	});
+
+
+	function addPlayer(name, num) {
+	  database.ref('Players/Player' + myUserID).set({
 	    playerName: name,
+	    wins: 0,
+	    losses: 0
 	  });
 	}
 
 	$(".nameSubmit").on("click", function(){
-		if ($(this).prev().val() != ""){
-			var dbref;
-			database.ref('Players').on("value", function(snapshot) {
-			   dbref = snapshot.val();
+		var placeholderName = $(this).prev().val();
+		if (placeholderName != ""){
+			var pRef;
+			database.ref('Players').once("value").then(function(snapshot) {
+			   pRef = snapshot.val();
+				if (pRef == null){
+					myUserID = 1;
+					console.log("no one here");
+				}
+				else {
+					myUserID = 2;
+					console.log("someone one here");
+				}
+
+				addPlayer (placeholderName, myUserID);
 			});
-			var placeholderName = $(this).prev().val();
-
-			if (dbref == null){
-				addPlayer (1, placeholderName);
-			}
-			else {
-				addPlayer (2, placeholderName);
-			}
 
 
-			// addPlayer (1, placeholderName);
-			// addPlayer (2, placeholderName);
-			
+
+
+
 		}
 	})
-
-	$(".clearButton").on("click", function(){
-		firebase.database().ref('Players/Player1/').remove();
-			
-	})
-
 
 })
