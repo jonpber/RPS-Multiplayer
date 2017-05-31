@@ -13,25 +13,12 @@ $(function(){
   // Get a reference to the database service
 	var database = firebase.database();
 	var myUserID;
-	var amOnline = database.ref(".info/connected");
 	var userRef;
-
-
-	amOnline.on('value', function(snapshot) {
-  		if (snapshot.val()) {
-    		database.ref('Players/Player' + myUserID).onDisconnect().remove();
-    		// userRef.set(true);
-  		} 
-  		else {
-    		// database.ref('Players/Player' + myUserID).remove();
-    		// database.ref('presence/' + myUserID).remove();
-  		}
-	});
 
 
 	function addPlayer(name, num) {
 	  database.ref('Players/Player' + myUserID).set({
-	    playerName: name,
+	    name: name,
 	    wins: 0,
 	    losses: 0
 	  });
@@ -42,24 +29,42 @@ $(function(){
 		if (placeholderName != ""){
 			var pRef;
 			database.ref('Players').once("value").then(function(snapshot) {
-			   pRef = snapshot.val();
+				pRef = snapshot.val();
 				if (pRef == null){
 					myUserID = 1;
-					console.log("no one here");
 				}
 				else {
 					myUserID = 2;
-					console.log("someone one here");
 				}
 
 				addPlayer (placeholderName, myUserID);
+	    		database.ref('Players/Player' + myUserID).onDisconnect().remove();
+	    		$(".nameInput").hide();
 			});
-
-
-
-
-
 		}
 	})
+
+	database.ref('Players/Player1').on("value", function(snapshot){
+		if (snapshot.val() !== null){
+			$("#p1").text(snapshot.child("name").val());
+		}
+
+		else {
+			$("#p1").text("");
+		}
+	});
+
+	database.ref('Players/Player2').on("value", function(snapshot){
+		if (snapshot.val() !== null){
+			$("#p2").text(snapshot.child("name").val());
+		}
+
+		else {
+			$("#p2").text("");
+		}
+
+	});
+
+
 
 })
