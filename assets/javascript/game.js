@@ -1,4 +1,6 @@
 $(function(){
+	var currentPlayers = 0;
+
 	var dbURL = "https://rps-multiplayer-e9d13.firebaseio.com";
 
 	var config = {
@@ -33,10 +35,16 @@ $(function(){
 				if (pRef == null){
 					myUserID = 1;
 				}
-				else {
-					myUserID = 2;
-				}
 
+				else if (Object.keys(pRef).length === 1){
+					if (Object.keys(pRef)[0] === "Player1"){
+						myUserID = 2;						
+					}
+					else {
+						myUserID = 1;
+					}
+
+				}
 				addPlayer (placeholderName, myUserID);
 	    		database.ref('Players/Player' + myUserID).onDisconnect().remove();
 	    		$(".nameInput").hide();
@@ -47,24 +55,26 @@ $(function(){
 	database.ref('Players/Player1').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p1").text(snapshot.child("name").val());
+			currentPlayers += 1;
 		}
 
 		else {
 			$("#p1").text("");
+			currentPlayers -= 1;
 		}
 	});
 
 	database.ref('Players/Player2').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p2").text(snapshot.child("name").val());
+			currentPlayers += 1;
 		}
 
 		else {
 			$("#p2").text("");
+			currentPlayers -= 1;
 		}
 
 	});
-
-
 
 })
