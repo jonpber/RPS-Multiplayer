@@ -91,11 +91,16 @@ $(function(){
 	database.ref('Players').on("value", function(snapshot){
 		if (snapshot.val() === null){
 			database.ref('Chat').remove();
+			database.ref("Turn").remove();
 		}
 
+		else if (Object.keys(snapshot.val()).length === 2) {
+			database.ref("Turn").set(1);
+		}
+
+		
+
 	});
-
-
 
 	database.ref('Chat').on("value", function(snapshot){
 		$(".textBox").html(snapshot.child("log").val());
