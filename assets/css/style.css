@@ -1,0 +1,27 @@
+.textBox, .chatInput {
+	width: 500px;
+	display: block;
+	margin: auto;
+}
+
+.textBox {
+	height: 300px;
+	border: 1px solid black;
+	text-align: left;
+	padding-left: 15px;
+	overflow: auto;
+}
+
+h1 {
+	font-size: 35px;
+	margin: 10px;
+}
+
+.p1text, .p2text {
+	color: black;
+}
+
+
+.nameInput {
+	padding: 25px;
+}

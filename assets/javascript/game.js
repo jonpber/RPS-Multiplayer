@@ -52,6 +52,18 @@ $(function(){
 		}
 	})
 
+	$(".chatSubmit").on("click", function(){
+		var chatText = $(this).prev().val();
+		if (chatText != "" && (myUserID === 1 || myUserID === 2)){
+			database.ref('Players/Player' + myUserID).once("value").then(function(snapshot){
+				$(".textBox").prepend("<p class=p" + myUserID + "text>" + snapshot.child("name").val() + ": " + chatText + "</p>");
+				database.ref("Chat").set({log: $(".textBox").html()});
+
+			});
+			// $("textarea").prepend()
+		}
+	})
+
 	database.ref('Players/Player1').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p1").text(snapshot.child("name").val());
@@ -74,7 +86,22 @@ $(function(){
 			$("#p2").text("");
 			currentPlayers -= 1;
 		}
+	});
+
+	database.ref('Players').on("value", function(snapshot){
+		if (snapshot.val() === null){
+			database.ref('Chat').remove();
+		}
 
 	});
+
+
+
+	database.ref('Chat').on("value", function(snapshot){
+		$(".textBox").html(snapshot.child("log").val());
+		$(".p" + myUserID + "text").css("color", "green");
+	});
+
+
 
 })
