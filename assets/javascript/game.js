@@ -91,6 +91,12 @@ $(function(){
 			database.ref("Turn").remove();
 		}
 
+		else if (Object.keys(snapshot.val()).length === 1) {
+			database.ref("Turn").remove();
+			$(".p1buttons").hide();
+			$(".p2buttons").hide();
+		}
+
 		else if (Object.keys(snapshot.val()).length === 2) {
 			database.ref("Turn").set(1);
 		}
