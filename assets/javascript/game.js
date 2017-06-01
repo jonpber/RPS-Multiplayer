@@ -28,6 +28,7 @@ $(function(){
 
 	$(".nameSubmit").on("click", function(){
 		var placeholderName = $(this).prev().val();
+		database.ref("Chat/Message").onDisconnect().set(placeholderName + " has disconnected");
 		if (placeholderName != ""){
 			var pRef;
 			database.ref('Players').once("value").then(function(snapshot) {
@@ -253,6 +254,13 @@ $(function(){
 		setTimeout(resetGame, 3000);
 	}
 
-
+	database.ref("Chat/Message").on("value", function(snapshot){
+		if (snapshot.val() !== null){
+			console.log("beep");
+			$(".textBox").append("<p class='adminMessage'>" + snapshot.val() + "</p>");
+			database.ref("Chat").set({log: $(".textBox").html()});
+			$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
+		}
+	})
 
 })
