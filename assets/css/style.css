@@ -25,3 +25,17 @@ h1 {
 .nameInput {
 	padding: 25px;
 }
+
+.square {
+/*	width: 250px;*/
+	height: 250px;
+	border: 1px solid black;
+}
+
+h2 {
+	font-size: 30px;
+}
+
+.p1GameUI, #p1Score, .p1buttons, .p2GameUI, #p2Score, .p2buttons {
+	display: none;
+}
