@@ -1,6 +1,4 @@
 $(function(){
-	var currentPlayers = 0;
-
 	var dbURL = "https://rps-multiplayer-e9d13.firebaseio.com";
 
 	var config = {
@@ -47,6 +45,7 @@ $(function(){
 
 				}
 				addPlayer (placeholderName, myUserID);
+				database.ref("Chat/Message").set(placeholderName + " has joined as Player " + myUserID);
 	    		database.ref('Players/Player' + myUserID).onDisconnect().remove();
 	    		$(".nameInput").hide();
 			});
