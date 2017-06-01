@@ -77,6 +77,7 @@ $(function(){
 	database.ref('Players/Player2').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p2").text(snapshot.child("name").val());
+			$("#p2Score").css("display", "block");
 		}
 
 		else {
@@ -92,19 +93,38 @@ $(function(){
 
 		else if (Object.keys(snapshot.val()).length === 2) {
 			database.ref("Turn").set(1);
-
-			if (myUserID === 1){
-				$(".p1buttons").show();
-			}
 		}
-
-		
 
 	});
 
 	database.ref('Chat').on("value", function(snapshot){
 		$(".textBox").html(snapshot.child("log").val());
 		$(".p" + myUserID + "text").css("color", "green");
+	});
+
+	database.ref('Turn').on("value", function(snapshot){
+		if (snapshot.val() === 1){
+			console.log("turn1");
+			if (myUserID === 1){
+				$(".p1buttons").show();
+			}
+		}
+
+		else if (snapshot.val() === 2){
+			if (myUserID === 2){
+				$(".p2buttons").show();
+			}
+		}
+	});
+
+	$(".gameButtons").on("click", function(){
+		database.ref('Players/Player' + myUserID + '/Hand').set($(this).text());
+
+		database.ref('Turn').on("value", function(snapshot){
+			if (snapshot.val() === 1){
+				database.ref('Turn').set(2);
+			}
+		});
 	});
 
 
