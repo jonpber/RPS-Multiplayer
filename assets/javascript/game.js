@@ -66,6 +66,8 @@ $(function(){
 	database.ref('Players/Player1').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p1").text(snapshot.child("name").val());
+			$(".p1wins").text(snapshot.child("wins").val());
+			$(".p1losses").text(snapshot.child("losses").val());
 			$("#p1Score").css("display", "block");
 		}
 
@@ -77,6 +79,8 @@ $(function(){
 	database.ref('Players/Player2').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p2").text(snapshot.child("name").val());
+			$(".p1wins").text(snapshot.child("wins").val());
+			$(".p1losses").text(snapshot.child("losses").val());
 			$("#p2Score").css("display", "block");
 		}
 
@@ -100,9 +104,10 @@ $(function(){
 		}
 
 		else if (Object.keys(snapshot.val()).length === 2) {
-			database.ref("Turn").set(1);
+			if(!snapshot.child("Player1/Hand").val()){
+				database.ref("Turn").set(1);
+			}
 		}
-
 	});
 
 	database.ref('Chat').on("value", function(snapshot){
@@ -119,24 +124,30 @@ $(function(){
 
 		else if (snapshot.val() === 2){
 			if (myUserID === 2){
+				// console.log("my turn");
 				$(".p2buttons").show();
 			}
+		}
+
+		else if (snapshot.val() === "end"){
+			checkWinner();
 		}
 	});
 
 	$(document).on("click", ".gameButtons", function(){
-		console.log("click");
 		var tmpText = $(this).text();
 		database.ref('Players/Player' + myUserID + '/Hand').set(tmpText);
 
-		database.ref('Turn').on("value", function(snapshot){
+		database.ref('Turn').once("value").then(function(snapshot){
 			if (snapshot.val() === 1){
 				database.ref('Turn').set(2);
 				$(".p1buttons").html("<h2>" + tmpText + "</h2>");
 			}
 
 			else {
+				// console.log("turn1");
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
+				database.ref('Turn').set("end");	
 			}
 		});
 	});
@@ -146,6 +157,98 @@ $(function(){
 		.append('<h3 class="gameButtons">Rock</h3>')
 		.append('<h3 class="gameButtons">Paper</h3>')
 		.append('<h3 class="gameButtons">Scissors</h3>')
+	}
+
+	function resetGame(){
+		database.ref("Turn").set(1);
+		$(".gameEndText").text("");
+		resetButtons($(".p1buttons"));
+		resetButtons($(".p2buttons"));
+		$(".p2buttons").hide();
+
+		if (myUserID !== 1){
+			$(".p1buttons").hide()
+		}
+	}
+
+	function checkWinner(){
+		var winner;
+		var p1hand;
+		var p1name;
+		var p1winslosses = [];
+		var p2hand;
+		var p2name;
+		var p2winslosses = [];
+
+		database.ref('Players').on("value", function(snapshot){
+			p1hand = snapshot.child("Player1/Hand").val();
+			p2hand = snapshot.child("Player2/Hand").val();
+			p1name = snapshot.child("Player1/name").val();
+			p2name = snapshot.child("Player2/name").val();
+			p1winslosses[0] = snapshot.child("Player1/wins").val()
+			p1winslosses[1] = snapshot.child("Player1/losses").val()
+			p2winslosses[0] = snapshot.child("Player2/wins").val()
+			p2winslosses[1] = snapshot.child("Player2/losses").val()
+		});
+		$(".p1buttons").html("<h2>" + p1hand + "</h2>").show();
+		$(".p2buttons").html("<h2>" + p2hand + "</h2>").show();
+
+		if (p1hand === "Rock"){
+			if (p2hand == "Scissors"){
+				$(".gameEndText").text(p1name + " Wins!");
+				database.ref("Player1/wins").set(p1winslosses[0] + 1);
+				database.ref("Player2/losses").set(p2winslosses[1] + 1);
+			}
+
+			else if (p2hand == "Paper"){
+				$(".gameEndText").text(p2name + " Wins!");
+				database.ref("Player2/wins").set(p2winslosses[0] + 1);
+				database.ref("Player1/losses").set(p1winslosses[1] + 1);
+			}
+
+			else {
+				$(".gameEndText").text("Tie!");
+			}
+		}
+
+		else if (p1hand === "Scissors"){
+			if (p2hand == "Paper"){
+				$(".gameEndText").text(p1name + " Wins!");
+				database.ref("Player1/wins").set(p1winslosses[0] + 1);
+				database.ref("Player2/losses").set(p2winslosses[1] + 1);
+
+			}
+
+			else if (p2hand == "Rock"){
+				$(".gameEndText").text(p2name + " Wins!");
+				database.ref("Player2/wins").set(p2winslosses[0] + 1);
+				database.ref("Player1/losses").set(p1winslosses[1] + 1);
+			}
+
+			else {
+				$(".gameEndText").text("Tie!");
+			}
+		}
+
+		else {
+			if (p2hand == "Rock"){
+				$(".gameEndText").text(p1name + " Wins!");
+				database.ref("Player1/wins").set(p1winslosses[0] + 1);
+				database.ref("Player2/losses").set(p2winslosses[1] + 1);
+			}
+
+			else if (p2hand == "Scissors"){
+				$(".gameEndText").text(p2name + " Wins!");
+				database.ref("Player2/wins").set(p2winslosses[0] + 1);
+				database.ref("Player1/losses").set(p1winslosses[1] + 1);
+			}
+
+			else {
+				$(".gameEndText").text("Tie!");
+			}
+		}
+
+		setTimeout(resetGame, 3000);
 	}
 
 
