@@ -79,8 +79,8 @@ $(function(){
 	database.ref('Players/Player2').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p2").text(snapshot.child("name").val());
-			$(".p1wins").text(snapshot.child("wins").val());
-			$(".p1losses").text(snapshot.child("losses").val());
+			$(".p2wins").text(snapshot.child("wins").val());
+			$(".p2losses").text(snapshot.child("losses").val());
 			$("#p2Score").css("display", "block");
 		}
 
@@ -190,20 +190,22 @@ $(function(){
 			p2winslosses[0] = snapshot.child("Player2/wins").val()
 			p2winslosses[1] = snapshot.child("Player2/losses").val()
 		});
+
+		console.log(p1winslosses);
 		$(".p1buttons").html("<h2>" + p1hand + "</h2>").show();
 		$(".p2buttons").html("<h2>" + p2hand + "</h2>").show();
 
 		if (p1hand === "Rock"){
 			if (p2hand == "Scissors"){
 				$(".gameEndText").text(p1name + " Wins!");
-				database.ref("Player1/wins").set(p1winslosses[0] + 1);
-				database.ref("Player2/losses").set(p2winslosses[1] + 1);
+				database.ref("Players/Player1/wins").set(1);
+				database.ref("Players/Player2/losses").set(p2winslosses[1] + 1);
 			}
 
 			else if (p2hand == "Paper"){
 				$(".gameEndText").text(p2name + " Wins!");
-				database.ref("Player2/wins").set(p2winslosses[0] + 1);
-				database.ref("Player1/losses").set(p1winslosses[1] + 1);
+				database.ref("Players/Player2/wins").set(p2winslosses[0] + 1);
+				database.ref("Players/Player1/losses").set(p1winslosses[1] + 1);
 			}
 
 			else {
@@ -214,15 +216,15 @@ $(function(){
 		else if (p1hand === "Scissors"){
 			if (p2hand == "Paper"){
 				$(".gameEndText").text(p1name + " Wins!");
-				database.ref("Player1/wins").set(p1winslosses[0] + 1);
-				database.ref("Player2/losses").set(p2winslosses[1] + 1);
+				database.ref("Players/Player1/wins").set(p1winslosses[0] + 1);
+				database.ref("Players/Player2/losses").set(p2winslosses[1] + 1);
 
 			}
 
 			else if (p2hand == "Rock"){
 				$(".gameEndText").text(p2name + " Wins!");
-				database.ref("Player2/wins").set(p2winslosses[0] + 1);
-				database.ref("Player1/losses").set(p1winslosses[1] + 1);
+				database.ref("Players/Player2/wins").set(p2winslosses[0] + 1);
+				database.ref("Players/Player1/losses").set(p1winslosses[1] + 1);
 			}
 
 			else {
@@ -233,14 +235,14 @@ $(function(){
 		else {
 			if (p2hand == "Rock"){
 				$(".gameEndText").text(p1name + " Wins!");
-				database.ref("Player1/wins").set(p1winslosses[0] + 1);
-				database.ref("Player2/losses").set(p2winslosses[1] + 1);
+				database.ref("Players/Player1/wins").set(p1winslosses[0] + 1);
+				database.ref("Players/Player2/losses").set(p2winslosses[1] + 1);
 			}
 
 			else if (p2hand == "Scissors"){
 				$(".gameEndText").text(p2name + " Wins!");
-				database.ref("Player2/wins").set(p2winslosses[0] + 1);
-				database.ref("Player1/losses").set(p1winslosses[1] + 1);
+				database.ref("Players/Player2/wins").set(p2winslosses[0] + 1);
+				database.ref("Players/Player1/losses").set(p1winslosses[1] + 1);
 			}
 
 			else {
