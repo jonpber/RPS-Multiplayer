@@ -52,7 +52,6 @@ $(function(){
 		}
 	})
 
-
 	$(".chatSubmit").on("click", function(){
 		var chatText = $(this).prev().val();
 		if (chatText != "" && (myUserID === 1 || myUserID === 2)){
@@ -60,33 +59,28 @@ $(function(){
 				$(".textBox").append("<p class=p" + myUserID + "text>" + snapshot.child("name").val() + ": " + chatText + "</p>");
 				database.ref("Chat").set({log: $(".textBox").html()});
 				$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
-
 			});
-			// $("textarea").prepend()
 		}
 	})
 
 	database.ref('Players/Player1').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p1").text(snapshot.child("name").val());
-			currentPlayers += 1;
+			$("#p1Score").css("display", "block");
 		}
 
 		else {
 			$("#p1").text("Waiting for Player 1");
-			currentPlayers -= 1;
 		}
 	});
 
 	database.ref('Players/Player2').on("value", function(snapshot){
 		if (snapshot.val() !== null){
 			$("#p2").text(snapshot.child("name").val());
-			currentPlayers += 1;
 		}
 
 		else {
 			$("#p2").text("Waiting for Player 2");
-			currentPlayers -= 1;
 		}
 	});
 
@@ -98,6 +92,10 @@ $(function(){
 
 		else if (Object.keys(snapshot.val()).length === 2) {
 			database.ref("Turn").set(1);
+
+			if (myUserID === 1){
+				$(".p1buttons").show();
+			}
 		}
 
 		
