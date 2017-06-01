@@ -91,6 +91,14 @@ $(function(){
 			database.ref("Turn").remove();
 		}
 
+		else if (Object.keys(snapshot.val()).length === 1) {
+			database.ref("Turn").remove();
+			$(".p1buttons").hide()
+			resetButtons($(".p1buttons"));
+			$(".p2buttons").hide();
+			resetButtons($(".p2buttons"));
+		}
+
 		else if (Object.keys(snapshot.val()).length === 2) {
 			database.ref("Turn").set(1);
 		}
@@ -104,7 +112,6 @@ $(function(){
 
 	database.ref('Turn').on("value", function(snapshot){
 		if (snapshot.val() === 1){
-			console.log("turn1");
 			if (myUserID === 1){
 				$(".p1buttons").show();
 			}
@@ -117,15 +124,29 @@ $(function(){
 		}
 	});
 
-	$(".gameButtons").on("click", function(){
-		database.ref('Players/Player' + myUserID + '/Hand').set($(this).text());
+	$(document).on("click", ".gameButtons", function(){
+		console.log("click");
+		var tmpText = $(this).text();
+		database.ref('Players/Player' + myUserID + '/Hand').set(tmpText);
 
 		database.ref('Turn').on("value", function(snapshot){
 			if (snapshot.val() === 1){
 				database.ref('Turn').set(2);
+				$(".p1buttons").html("<h2>" + tmpText + "</h2>");
+			}
+
+			else {
+				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
 			}
 		});
 	});
+
+	function resetButtons(div){
+		div.empty()
+		.append('<h3 class="gameButtons">Rock</h3>')
+		.append('<h3 class="gameButtons">Paper</h3>')
+		.append('<h3 class="gameButtons">Scissors</h3>')
+	}
 
 
 
