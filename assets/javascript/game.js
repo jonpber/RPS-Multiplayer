@@ -93,6 +93,10 @@ $(function(){
 		if (snapshot.val() === null){
 			database.ref('Chat').remove();
 			database.ref("Turn").remove();
+
+			if (myUserID !== 1 || myUserID !== 2) {
+				$(".nameInput").show();
+			}
 		}
 
 		else if (Object.keys(snapshot.val()).length === 1) {
@@ -101,12 +105,18 @@ $(function(){
 			resetButtons($(".p1buttons"));
 			$(".p2buttons").hide();
 			resetButtons($(".p2buttons"));
+
+			if (myUserID !== 1 || myUserID !== 2) {
+				$(".nameInput").show();
+			}
 		}
 
 		else if (Object.keys(snapshot.val()).length === 2) {
 			if(!snapshot.child("Player1/Hand").val()){
 				database.ref("Turn").set(1);
 			}
+
+			$(".nameInput").hide();
 		}
 	});
 
@@ -165,6 +175,8 @@ $(function(){
 		resetButtons($(".p1buttons"));
 		resetButtons($(".p2buttons"));
 		$(".p2buttons").hide();
+		database.ref("Players/Player1/Hand").remove();
+		database.ref("Players/Player1/Hand").remove();
 
 		if (myUserID !== 1){
 			$(".p1buttons").hide()
@@ -255,7 +267,6 @@ $(function(){
 
 	database.ref("Chat/Message").on("value", function(snapshot){
 		if (snapshot.val() !== null){
-			console.log("beep");
 			$(".textBox").append("<p class='adminMessage'>" + snapshot.val() + "</p>");
 			database.ref("Chat").set({log: $(".textBox").html()});
 			$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
