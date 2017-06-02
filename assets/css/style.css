@@ -19,8 +19,15 @@ body {
 h1 {
 	font-size: 45px;
 	margin: 10px;
-	font-family: 'Lobster', cursive;
 	color: white;
+}
+
+h2 {
+	font-size: 30px;
+}
+
+h1, h2 {
+	font-family: 'Lobster', cursive;
 }
 
 .p1text, .p2text {
@@ -44,14 +51,17 @@ input {
 	background-color: white;
 }
 
+
 .square {
 /*	width: 250px;*/
 	height: 250px;
 	border: 1px solid black;
 }
 
-h2 {
-	font-size: 30px;
+.squareNoStyle {
+	border: none;
+	background: none;
+	color: white;
 }
 
 .p1GameUI, #p1Score, .p1buttons, .p2GameUI, #p2Score, .p2buttons {
