@@ -13,6 +13,7 @@ $(function(){
   // Get a reference to the database service
 	var database = firebase.database();
 	var myUserID;
+	var myName;
 	var userRef;
 
 
@@ -24,40 +25,71 @@ $(function(){
 	  });
 	}
 
+	function removePlayer(num){
+		database.ref('Players/Player' + num).remove();
+	}
+
 	$(".nameSubmit").on("click", function(){
 		var placeholderName = $(this).prev().val();
 		database.ref("Chat/Message").onDisconnect().set(placeholderName + " has disconnected");
 		if (placeholderName != ""){
-			var pRef;
-			database.ref('Players').once("value").then(function(snapshot) {
-				pRef = snapshot.val();
-				if (pRef == null){
-					myUserID = 1;
-				}
+			myName = placeholderName;
+			$(".greetingH1").text("Hello, " + myName);
+			database.ref("Chat/Message").set(placeholderName + " has connected");
+			database.ref("Lobby/" + myName).set(true);
+			database.ref("Lobby/" + myName).onDisconnect().remove();
 
-				else if (Object.keys(pRef).length === 1){
-					if (Object.keys(pRef)[0] === "Player1"){
-						myUserID = 2;						
-					}
-					else {
-						myUserID = 1;
-					}
+			setTimeout(function(){
+				$(".contNameInput").hide();
+				$(".contMain").fadeIn();
+			}, 2500);
+			
+			// database.ref('Players').once("value").then(function(snapshot) {
+			// 	var pRef = snapshot.val();
+			// 	if (pRef == null){
+			// 		myUserID = 1;
+			// 	}
 
-				}
-				addPlayer (placeholderName, myUserID);
-				database.ref("Chat/Message").set(placeholderName + " has joined as Player " + myUserID);
-	    		database.ref('Players/Player' + myUserID).onDisconnect().remove();
-	    		$(".nameInput").hide();
-			});
+			// 	else if (Object.keys(pRef).length === 1){
+			// 		if (Object.keys(pRef)[0] === "Player1"){
+			// 			myUserID = 2;						
+			// 		}
+			// 		else {
+			// 			myUserID = 1;
+			// 		}
+
+			// 	}
+			// 	addPlayer (placeholderName, myUserID);
+			// 	database.ref("Chat/Message").set(placeholderName + " has joined as Player " + myUserID);
+	  //   		database.ref('Players/Player' + myUserID).onDisconnect().remove();
+	  //   		$(".nameInput").hide();
+			// });
+		}
+	})
+
+	$(".square").on("click", function(){
+		if ($(this).attr("data-occupied") === "empty"){
+			// database.ref('Players/Buffer').set(true);
+			if (myUserID !== undefined){
+				removePlayer(myUserID);
+
+			}
+			myUserID = parseInt($(this).attr("data-player"));
+			addPlayer (myName, myUserID);
+			database.ref("Chat/Message").set(myName + " is now Player " + myUserID);
+			database.ref('Players/Player' + myUserID).onDisconnect().remove();
+			database.ref('Lobby/' + myName).remove();
+			$(this).attr("data-occupied", "filled");
 		}
 	})
 
 	$(".chatSubmit").on("click", function(){
-		var chatText = $(this).prev().val();
-		if (chatText != "" && (myUserID === 1 || myUserID === 2)){
+		var chatText = $(".chatInput").val();
+		if (chatText != ""){
 			database.ref('Players/Player' + myUserID).once("value").then(function(snapshot){
-				$(".textBox").append("<p class=p" + myUserID + "text>" + snapshot.child("name").val() + ": " + chatText + "</p>");
+				var newText = $("<p>" + myName + ": " + chatText + "</p>").appendTo(".textBox");
 				database.ref("Chat").set({log: $(".textBox").html()});
+				newText.css("color", "green");
 				$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
 			});
 		}
@@ -91,12 +123,12 @@ $(function(){
 
 	database.ref('Players').on("value", function(snapshot){
 		if (snapshot.val() === null){
-			database.ref('Chat').remove();
 			database.ref("Turn").remove();
-
-			if (myUserID !== 1 || myUserID !== 2) {
-				$(".nameInput").show();
-			}
+			database.ref('Lobby').once("value").then(function(snapshot){
+				if(snapshot.val() === null){
+					database.ref('Chat').remove();
+				}
+			})
 		}
 
 		else if (Object.keys(snapshot.val()).length === 1) {
@@ -105,18 +137,13 @@ $(function(){
 			resetButtons($(".p1buttons"));
 			$(".p2buttons").hide();
 			resetButtons($(".p2buttons"));
-
-			if (myUserID !== 1 || myUserID !== 2) {
-				$(".nameInput").show();
-			}
+			database.ref("Players/Player1/Hand").remove();
 		}
 
 		else if (Object.keys(snapshot.val()).length === 2) {
 			if(!snapshot.child("Player1/Hand").val()){
 				database.ref("Turn").set(1);
 			}
-
-			$(".nameInput").hide();
 		}
 	});
 
@@ -128,14 +155,16 @@ $(function(){
 	database.ref('Turn').on("value", function(snapshot){
 		if (snapshot.val() === 1){
 			if (myUserID === 1){
-				$(".p1buttons").show();
+				// $(".p1buttons").show();
+				$(".buttonDrawer").slideDown();
 			}
 		}
 
 		else if (snapshot.val() === 2){
 			if (myUserID === 2){
-				// console.log("my turn");
-				$(".p2buttons").show();
+				// $(".p2buttons").show();
+				$(".buttonDrawer").slideDown();
+
 			}
 		}
 
@@ -145,7 +174,8 @@ $(function(){
 	});
 
 	$(document).on("click", ".gameButtons", function(){
-		var tmpText = $(this).text();
+		var tmpText = $(this).attr("data-hand");
+		$(".buttonDrawer").slideUp();
 		database.ref('Players/Player' + myUserID + '/Hand').set(tmpText);
 
 		database.ref('Turn').once("value").then(function(snapshot){
@@ -164,9 +194,9 @@ $(function(){
 
 	function resetButtons(div){
 		div.empty()
-		.append('<h3 class="gameButtons">Rock</h3>')
-		.append('<h3 class="gameButtons">Paper</h3>')
-		.append('<h3 class="gameButtons">Scissors</h3>')
+		.append('<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">')
+		.append('<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">')
+		.append('<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">')
 	}
 
 	function resetGame(){
