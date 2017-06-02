@@ -1,3 +1,7 @@
+body {
+	background-color: #718e9d;
+}
+
 .textBox, .chatInput {
 	width: 500px;
 	display: block;
@@ -9,11 +13,14 @@
 	border: 1px solid black;
 	text-align: left;
 	overflow: auto;
+	border-radius: 15px;
 }
 
 h1 {
-	font-size: 35px;
+	font-size: 45px;
 	margin: 10px;
+	font-family: 'Lobster', cursive;
+	color: white;
 }
 
 .p1text, .p2text {
@@ -25,9 +32,16 @@ h1 {
 	color: white;
 }
 
+input {
+	border: 1px solid black;
+}
 
 .nameInput {
 	padding: 25px;
+}
+
+.square, .textBox {
+	background-color: white;
 }
 
 .square {
@@ -42,4 +56,9 @@ h2 {
 
 .p1GameUI, #p1Score, .p1buttons, .p2GameUI, #p2Score, .p2buttons {
 	display: none;
+}
+
+p {
+	word-wrap: break-word;
+	padding: 0 15px;
 }
