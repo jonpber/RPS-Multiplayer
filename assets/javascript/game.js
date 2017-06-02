@@ -69,17 +69,17 @@ $(function(){
 
 	$(".square").on("click", function(){
 		if ($(this).attr("data-occupied") === "empty"){
-			database.ref('Players/Buffer').set(true);
+			// database.ref('Players/Buffer').set(true);
 			if (myUserID !== undefined){
 				removePlayer(myUserID);
+
 			}
-			myUserID = $(this).attr("data-player");
+			myUserID = parseInt($(this).attr("data-player"));
 			addPlayer (myName, myUserID);
 			database.ref("Chat/Message").set(myName + " is now Player " + myUserID);
 			database.ref('Players/Player' + myUserID).onDisconnect().remove();
 			database.ref('Lobby/' + myName).remove();
-			database.ref('Players/Buffer').remove();
-			console.log("my myUserID should be " + myUserID);
+			$(this).attr("data-occupied", "filled");
 		}
 	})
 
@@ -154,16 +154,16 @@ $(function(){
 
 	database.ref('Turn').on("value", function(snapshot){
 		if (snapshot.val() === 1){
-			console.log("Turn 1")
-			console.log("myuserid is " + myUserID);
+			console.log("myUserID is " + myUserID);
 			if (myUserID === 1){
+				console.log("buttons should be up");
 				$(".p1buttons").show();
 			}
 		}
 
 		else if (snapshot.val() === 2){
 			if (myUserID === 2){
-				// console.log("my turn");
+				console.log("my turn");
 				$(".p2buttons").show();
 			}
 		}
