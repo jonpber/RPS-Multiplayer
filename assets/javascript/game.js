@@ -79,12 +79,12 @@ $(function(){
 			database.ref("Chat/Message").set(myName + " is now Player " + myUserID);
 			database.ref('Players/Player' + myUserID).onDisconnect().remove();
 			database.ref('Lobby/' + myName).remove();
-			$(this).attr("data-occupied", "filled");
 		}
 	})
 
 	$(".chatSubmit").on("click", function(){
 		var chatText = $(".chatInput").val();
+		$(".chatInput").val("");
 		if (chatText != ""){
 			database.ref('Players/Player' + myUserID).once("value").then(function(snapshot){
 				var newText = $("<p>" + myName + ": " + chatText + "</p>").appendTo(".textBox");
@@ -101,10 +101,12 @@ $(function(){
 			$(".p1wins").text(snapshot.child("wins").val());
 			$(".p1losses").text(snapshot.child("losses").val());
 			$("#p1Score").css("display", "block");
+			$(".p1Spot").attr("data-occupied", "filled");
 		}
 
 		else {
 			$("#p1").text("Waiting for Player 1");
+			$(".p1Spot").attr("data-occupied", "empty");
 		}
 	});
 
@@ -114,10 +116,12 @@ $(function(){
 			$(".p2wins").text(snapshot.child("wins").val());
 			$(".p2losses").text(snapshot.child("losses").val());
 			$("#p2Score").css("display", "block");
+			$(".p2Spot").attr("data-occupied", "filled");
 		}
 
 		else {
 			$("#p2").text("Waiting for Player 2");
+			$(".p2Spot").attr("data-occupied", "empty");
 		}
 	});
 
@@ -134,9 +138,7 @@ $(function(){
 		else if (Object.keys(snapshot.val()).length === 1) {
 			database.ref("Turn").remove();
 			$(".p1buttons").hide()
-			resetButtons($(".p1buttons"));
 			$(".p2buttons").hide();
-			resetButtons($(".p2buttons"));
 			database.ref("Players/Player1/Hand").remove();
 		}
 
@@ -177,7 +179,6 @@ $(function(){
 		var tmpText = $(this).attr("data-hand");
 		$(".buttonDrawer").slideUp();
 		database.ref('Players/Player' + myUserID + '/Hand').set(tmpText);
-
 		database.ref('Turn').once("value").then(function(snapshot){
 			if (snapshot.val() === 1){
 				database.ref('Turn').set(2);
@@ -192,18 +193,16 @@ $(function(){
 		});
 	});
 
-	function resetButtons(div){
-		div.empty()
-		.append('<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">')
-		.append('<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">')
-		.append('<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">')
-	}
+	// function resetButtons(div){
+	// 	div.empty()
+	// 	.append('<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">')
+	// 	.append('<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">')
+	// 	.append('<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">')
+	// }
 
 	function resetGame(){
 		database.ref("Turn").set(1);
 		$(".gameEndText").text("");
-		resetButtons($(".p1buttons"));
-		resetButtons($(".p2buttons"));
 		$(".p2buttons").hide();
 		database.ref("Players/Player1/Hand").remove();
 		database.ref("Players/Player1/Hand").remove();
