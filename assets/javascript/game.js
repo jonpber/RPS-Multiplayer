@@ -25,6 +25,10 @@ $(function(){
 	  });
 	}
 
+	function removePlayer(num){
+		database.ref('Players/Player' + num).remove();
+	}
+
 	$(".nameSubmit").on("click", function(){
 		var placeholderName = $(this).prev().val();
 		database.ref("Chat/Message").onDisconnect().set(placeholderName + " has disconnected");
@@ -60,6 +64,22 @@ $(function(){
 	  //   		database.ref('Players/Player' + myUserID).onDisconnect().remove();
 	  //   		$(".nameInput").hide();
 			// });
+		}
+	})
+
+	$(".square").on("click", function(){
+		if ($(this).attr("data-occupied") === "empty"){
+			database.ref('Players/Buffer').set(true);
+			if (myUserID !== undefined){
+				removePlayer(myUserID);
+			}
+			myUserID = $(this).attr("data-player");
+			addPlayer (myName, myUserID);
+			database.ref("Chat/Message").set(myName + " is now Player " + myUserID);
+			database.ref('Players/Player' + myUserID).onDisconnect().remove();
+			database.ref('Lobby/' + myName).remove();
+			database.ref('Players/Buffer').remove();
+			console.log("my myUserID should be " + myUserID);
 		}
 	})
 
@@ -104,13 +124,11 @@ $(function(){
 	database.ref('Players').on("value", function(snapshot){
 		if (snapshot.val() === null){
 			database.ref("Turn").remove();
-			database.ref('Lobby').on("value", function(snapshot){
+			database.ref('Lobby').once("value").then(function(snapshot){
 				if(snapshot.val() === null){
 					database.ref('Chat').remove();
 				}
 			})
-						
-
 		}
 
 		else if (Object.keys(snapshot.val()).length === 1) {
@@ -120,19 +138,12 @@ $(function(){
 			$(".p2buttons").hide();
 			resetButtons($(".p2buttons"));
 			database.ref("Players/Player1/Hand").remove();
-
-
-			if (myUserID !== 1 || myUserID !== 2) {
-				$(".nameInput").show();
-			}
 		}
 
 		else if (Object.keys(snapshot.val()).length === 2) {
 			if(!snapshot.child("Player1/Hand").val()){
 				database.ref("Turn").set(1);
 			}
-
-			$(".nameInput").hide();
 		}
 	});
 
@@ -143,6 +154,8 @@ $(function(){
 
 	database.ref('Turn').on("value", function(snapshot){
 		if (snapshot.val() === 1){
+			console.log("Turn 1")
+			console.log("myuserid is " + myUserID);
 			if (myUserID === 1){
 				$(".p1buttons").show();
 			}
