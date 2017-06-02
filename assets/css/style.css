@@ -8,7 +8,6 @@
 	height: 300px;
 	border: 1px solid black;
 	text-align: left;
-	padding-left: 15px;
 	overflow: auto;
 }
 
@@ -19,6 +18,11 @@ h1 {
 
 .p1text, .p2text {
 	color: black;
+}
+
+.adminMessage {
+	background-color: grey;
+	color: white;
 }
 
 
