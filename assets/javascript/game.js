@@ -154,17 +154,17 @@ $(function(){
 
 	database.ref('Turn').on("value", function(snapshot){
 		if (snapshot.val() === 1){
-			console.log("myUserID is " + myUserID);
 			if (myUserID === 1){
-				console.log("buttons should be up");
-				$(".p1buttons").show();
+				// $(".p1buttons").show();
+				$(".buttonDrawer").slideDown();
 			}
 		}
 
 		else if (snapshot.val() === 2){
 			if (myUserID === 2){
-				console.log("my turn");
-				$(".p2buttons").show();
+				// $(".p2buttons").show();
+				$(".buttonDrawer").slideDown();
+
 			}
 		}
 
@@ -175,6 +175,7 @@ $(function(){
 
 	$(document).on("click", ".gameButtons", function(){
 		var tmpText = $(this).attr("data-hand");
+		$(".buttonDrawer").slideUp();
 		database.ref('Players/Player' + myUserID + '/Hand').set(tmpText);
 
 		database.ref('Turn').once("value").then(function(snapshot){

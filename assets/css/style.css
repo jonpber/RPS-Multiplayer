@@ -84,7 +84,7 @@ input {
 
 .square {
 /*	width: 250px;*/
-	height: 250px;
+	height: 345px;
 	border: 1px solid black;
 }
 
@@ -136,3 +136,15 @@ p {
  	display: none;
  }
 
+.buttonDrawer {
+	background-color: #91a8b5;
+	border-bottom: 3px solid black;
+	border-left: 3px solid black;
+	border-right: 3px solid black;
+	display: none;
+}
+
+.gameSquare {
+	background: #111518;
+	border: 2px solid black;
+}
