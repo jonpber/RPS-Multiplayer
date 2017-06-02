@@ -13,6 +13,7 @@ $(function(){
   // Get a reference to the database service
 	var database = firebase.database();
 	var myUserID;
+	var myName;
 	var userRef;
 
 
@@ -28,36 +29,47 @@ $(function(){
 		var placeholderName = $(this).prev().val();
 		database.ref("Chat/Message").onDisconnect().set(placeholderName + " has disconnected");
 		if (placeholderName != ""){
-			var pRef;
-			database.ref('Players').once("value").then(function(snapshot) {
-				pRef = snapshot.val();
-				if (pRef == null){
-					myUserID = 1;
-				}
+			myName = placeholderName;
+			$(".greetingH1").text("Hello, " + myName);
+			database.ref("Chat/Message").set(placeholderName + " has connected");
+			database.ref("Lobby/" + myName).set(true);
+			database.ref("Lobby/" + myName).onDisconnect().remove();
 
-				else if (Object.keys(pRef).length === 1){
-					if (Object.keys(pRef)[0] === "Player1"){
-						myUserID = 2;						
-					}
-					else {
-						myUserID = 1;
-					}
+			setTimeout(function(){
+				$(".contNameInput").hide();
+				$(".contMain").fadeIn();
+			}, 2500);
+			
+			// database.ref('Players').once("value").then(function(snapshot) {
+			// 	var pRef = snapshot.val();
+			// 	if (pRef == null){
+			// 		myUserID = 1;
+			// 	}
 
-				}
-				addPlayer (placeholderName, myUserID);
-				database.ref("Chat/Message").set(placeholderName + " has joined as Player " + myUserID);
-	    		database.ref('Players/Player' + myUserID).onDisconnect().remove();
-	    		$(".nameInput").hide();
-			});
+			// 	else if (Object.keys(pRef).length === 1){
+			// 		if (Object.keys(pRef)[0] === "Player1"){
+			// 			myUserID = 2;						
+			// 		}
+			// 		else {
+			// 			myUserID = 1;
+			// 		}
+
+			// 	}
+			// 	addPlayer (placeholderName, myUserID);
+			// 	database.ref("Chat/Message").set(placeholderName + " has joined as Player " + myUserID);
+	  //   		database.ref('Players/Player' + myUserID).onDisconnect().remove();
+	  //   		$(".nameInput").hide();
+			// });
 		}
 	})
 
 	$(".chatSubmit").on("click", function(){
-		var chatText = $(this).prev().val();
-		if (chatText != "" && (myUserID === 1 || myUserID === 2)){
+		var chatText = $(".chatInput").val();
+		if (chatText != ""){
 			database.ref('Players/Player' + myUserID).once("value").then(function(snapshot){
-				$(".textBox").append("<p class=p" + myUserID + "text>" + snapshot.child("name").val() + ": " + chatText + "</p>");
+				var newText = $("<p>" + myName + ": " + chatText + "</p>").appendTo(".textBox");
 				database.ref("Chat").set({log: $(".textBox").html()});
+				newText.css("color", "green");
 				$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
 			});
 		}
@@ -91,12 +103,14 @@ $(function(){
 
 	database.ref('Players').on("value", function(snapshot){
 		if (snapshot.val() === null){
-			database.ref('Chat').remove();
 			database.ref("Turn").remove();
+			database.ref('Lobby').on("value", function(snapshot){
+				if(snapshot.val() === null){
+					database.ref('Chat').remove();
+				}
+			})
+						
 
-			if (myUserID !== 1 || myUserID !== 2) {
-				$(".nameInput").show();
-			}
 		}
 
 		else if (Object.keys(snapshot.val()).length === 1) {

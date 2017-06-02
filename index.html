@@ -14,7 +14,7 @@
 </head>
 <body>
 
-	<div class="container">
+	<div class="container contMain">
 		<div class="row">
 			<div class="col-xs-12 text-center">
 				<h1>Rock Paper Scissors Online</h1>
@@ -22,14 +22,28 @@
 		</div>
 
 		<div class="row">
-			<div class="col-xs-12 text-center nameInput">
-				<p>Please Enter Your Name:</p>
-				<input type="playerName" name=""></h1>
-				<button class="nameSubmit">Submit</button>
+			<div class="col-xs-8 text-center">
+				<div class="square">
+				</div>
+			</div>
+
+			<div class="col-xs-4 text-center text-center">
+				<div class="text-center">
+					<h3 class="chatHeader">Chat</h3>
+				</div>
+				<div class="textBox"></div>
+				<div class="row">
+					<div class="col-xs-8 noPadRight">
+						<input class="chatInput" type="text" name=""></h1>
+					</div>
+					<div class="col-xs-4 noPadLeft">
+						<button class="chatSubmit">Submit</button>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		<div class="row">
+<!-- 		<div class="row">
 			<div class="col-xs-4 text-center">
 				<div class="square">
 					<h2 id="p1">Waiting for Player 1</h2>
@@ -37,11 +51,9 @@
 						<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">
 						<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">
 						<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">
-<!-- 						<h3 class="gameButtons">Rock</h3>
-						<h3 class="gameButtons">Paper</h3>
-						<h3 class="gameButtons">Scissors</h3> -->
+
 					</div>
-					<p id="p1Score">Wins:<span class="p1wins">0</span> Losses:<span class="p1losses">0</span></p>
+					<h3 id="p1Score">Wins:<span class="p1wins">0</span> Losses:<span class="p1losses">0</span></h3>
 				</div>
 			</div>
 			<div class="col-xs-4 text-center">
@@ -54,25 +66,23 @@
 				<div class="square">
 					<h2 id="p2">Waiting for Player 2</h2>
 					<div class="p2buttons">
-						<h3 class="gameButtons">Rock</h3>
-						<h3 class="gameButtons">Paper</h3>
-						<h3 class="gameButtons">Scissors</h3>
+						<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">
+						<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">
+						<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">
 					</div>
-					<p id="p2Score">Wins:<span class="p2wins">0</span> Losses:<span class="p2losses">0</span></p>
+					<h3 id="p2Score">Wins:<span class="p2wins">0</span> Losses:<span class="p2losses">0</span></h3>
 				</div>
 			</div>
+		</div> -->
+	</div>
+
+	<div class="contNameInput text-center">
+		<div class="nameInput">
+			<h1 class="greetingH1">Rock Paper Scissors Online</h1>
+			<h4>Please Enter Your Name:</h4>
+			<input class="nameInputBox" type="playerName" name="" maxlength="12"><button class="nameSubmit">Submit</button>
+
 		</div>
-
-		<br>
-
-		<div class="row">
-			<div class="col-xs-12 text-center text-center">
-				<div class="textBox"></div>
-				<input class="chatInput" type="text" name=""></h1>
-				<button class="chatSubmit">Submit</button>
-			</div>
-		</div>
-
 	</div>
 
 
