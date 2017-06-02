@@ -105,6 +105,8 @@ $(function(){
 			resetButtons($(".p1buttons"));
 			$(".p2buttons").hide();
 			resetButtons($(".p2buttons"));
+			database.ref("Players/Player1/Hand").remove();
+
 
 			if (myUserID !== 1 || myUserID !== 2) {
 				$(".nameInput").show();
@@ -145,7 +147,7 @@ $(function(){
 	});
 
 	$(document).on("click", ".gameButtons", function(){
-		var tmpText = $(this).text();
+		var tmpText = $(this).attr("data-hand");
 		database.ref('Players/Player' + myUserID + '/Hand').set(tmpText);
 
 		database.ref('Turn').once("value").then(function(snapshot){
@@ -164,9 +166,9 @@ $(function(){
 
 	function resetButtons(div){
 		div.empty()
-		.append('<h3 class="gameButtons">Rock</h3>')
-		.append('<h3 class="gameButtons">Paper</h3>')
-		.append('<h3 class="gameButtons">Scissors</h3>')
+		.append('<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">')
+		.append('<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">')
+		.append('<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">')
 	}
 
 	function resetGame(){
