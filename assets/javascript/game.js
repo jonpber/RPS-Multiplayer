@@ -30,11 +30,11 @@ $(function(){
 
 	$(".nameSubmit").on("click", function(){
 		var placeholderName = $(this).prev().val();
-		database.ref("Chat/Message").onDisconnect().set(placeholderName + " has disconnected");
+		database.ref("Chat/Message").onDisconnect().set("~" + placeholderName + " has disconnected~");
 		if (placeholderName != ""){
 			myName = placeholderName;
 			$(".greetingH1").text("Hello, " + myName);
-			database.ref("Chat/Message").set(placeholderName + " has connected");
+			database.ref("Chat/Message").set("~" + placeholderName + " has connected~");
 			database.ref("Lobby/" + myName).set(true);
 			database.ref("Lobby/" + myName).onDisconnect().remove();
 
@@ -64,10 +64,18 @@ $(function(){
 		var chatText = $(".chatInput").val();
 		$(".chatInput").val("");
 		if (chatText != ""){
-			database.ref('Players/Player' + myUserID).once("value").then(function(snapshot){
-				var newText = $("<p><b>" + myName + "</b>: " + chatText + "</p>").appendTo(".textBox");
-				database.ref("Chat").set({log: $(".textBox").html()});
-				newText.css("color", "green");
+			database.ref('Chat/log').once("value").then(function(snapshot){
+				// 	var newText = $("<p><b>" + myName + "</b>: " + chatText + "</p>").appendTo(".textBox");
+				
+				// 	newText.css("color", "green");
+				var arrayHolder = snapshot.val();
+				if (!Array.isArray(arrayHolder)){
+					arrayHolder = [];
+				}
+
+				arrayHolder[arrayHolder.length] = myName + ": " + chatText;
+				database.ref("Chat").set({log: arrayHolder});
+				updateChat(arrayHolder);
 			});
 		}
 	})
@@ -77,7 +85,7 @@ $(function(){
 			$("#p1").text(snapshot.child("name").val());
 			$(".p1wins").text(snapshot.child("wins").val());
 			$(".p1losses").text(snapshot.child("losses").val());
-			$("#p1Score").css("display", "block");
+			// $("#p1Score").css("display", "block");
 			$(".p1Spot").attr("data-occupied", "filled");
 		}
 
@@ -92,7 +100,7 @@ $(function(){
 			$("#p2").text(snapshot.child("name").val());
 			$(".p2wins").text(snapshot.child("wins").val());
 			$(".p2losses").text(snapshot.child("losses").val());
-			$("#p2Score").css("display", "block");
+			// $("#p2Score").css("display", "block");
 			$(".p2Spot").attr("data-occupied", "filled");
 		}
 
@@ -107,7 +115,7 @@ $(function(){
 			database.ref("Turn").remove();
 			database.ref('Lobby').once("value").then(function(snapshot){
 				if(snapshot.val() === null){
-					database.ref('Chat').remove();
+					database.ref('Chat').set({log: []});
 				}
 			})
 		}
@@ -128,8 +136,11 @@ $(function(){
 	});
 
 	database.ref('Chat').on("value", function(snapshot){
-		$(".textBox").html(snapshot.child("log").val());
-		$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
+		var arrayHolder = snapshot.child("log").val();
+		if (!Array.isArray(arrayHolder)){
+			arrayHolder = [];
+		}
+		updateChat(arrayHolder);
 	});
 
 	database.ref('Turn').on("value", function(snapshot){
@@ -175,7 +186,8 @@ $(function(){
 
 			else {
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
-				database.ref('Turn').set("end");	
+				database.ref('Turn').set("end");
+				$(".p1Spot").children().html("<img src=url('assets/images/");
 			}
 		});
 	});
@@ -276,9 +288,40 @@ $(function(){
 
 	database.ref("Chat/Message").on("value", function(snapshot){
 		if (snapshot.val() !== null){
-			$(".textBox").append("<p class='adminMessage'>" + snapshot.val() + "</p>");
-			database.ref("Chat").set({log: $(".textBox").html()});
+			var tempAdminMessage = snapshot.val();
+			database.ref('Chat/log').once("value").then(function(snapshot1){
+				var arrayHolder = snapshot1.val();
+				if (!Array.isArray(arrayHolder)){
+					arrayHolder = [];
+				}
+				arrayHolder[arrayHolder.length] = tempAdminMessage;
+				updateChat(arrayHolder);
+				database.ref('Chat/log').set(arrayHolder);
+			});
+			// database.ref("Chat").set({log: $(".textBox").html()});
 		}
 	})
 
+	function updateChat(array){
+		$(".textBox").empty();
+		if (array.length === null){
+			array = [];
+		}
+		
+		if (Array.isArray(array)){
+			for (var i =0; i < array.length; i++){
+				var pTemp = $("<p>").text(array[i]);
+				if(array[i].substring(0, myName.length) === myName){
+					pTemp.css("color", "green");
+				}
+
+				else if (array[i].substring(0, 1) === "~") {
+					pTemp.css("color", "white")
+					.css("background-color", "#607f80");
+				}
+				$(".textBox").append(pTemp);
+			}
+			$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
+		}
+	}
 })
