@@ -16,7 +16,6 @@ $(function(){
 	var myName;
 	var userRef;
 
-
 	function addPlayer(name, num) {
 	  database.ref('Players/Player' + myUserID).set({
 	    name: name,
@@ -43,27 +42,6 @@ $(function(){
 				$(".contNameInput").hide();
 				$(".contMain").fadeIn();
 			}, 2500);
-			
-			// database.ref('Players').once("value").then(function(snapshot) {
-			// 	var pRef = snapshot.val();
-			// 	if (pRef == null){
-			// 		myUserID = 1;
-			// 	}
-
-			// 	else if (Object.keys(pRef).length === 1){
-			// 		if (Object.keys(pRef)[0] === "Player1"){
-			// 			myUserID = 2;						
-			// 		}
-			// 		else {
-			// 			myUserID = 1;
-			// 		}
-
-			// 	}
-			// 	addPlayer (placeholderName, myUserID);
-			// 	database.ref("Chat/Message").set(placeholderName + " has joined as Player " + myUserID);
-	  //   		database.ref('Players/Player' + myUserID).onDisconnect().remove();
-	  //   		$(".nameInput").hide();
-			// });
 		}
 	})
 
@@ -104,7 +82,7 @@ $(function(){
 		}
 
 		else {
-			$("#p1").text("");
+			$("#p1").text("???");
 			$(".p1Spot").attr("data-occupied", "empty");
 		}
 	});
@@ -119,7 +97,7 @@ $(function(){
 		}
 
 		else {
-			$("#p2").text("");
+			$("#p2").text("???");
 			$(".p2Spot").attr("data-occupied", "empty");
 		}
 	});
@@ -152,24 +130,29 @@ $(function(){
 	database.ref('Chat').on("value", function(snapshot){
 		$(".textBox").html(snapshot.child("log").val());
 		$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
-		// $(".p" + myUserID + "text").css("color", "green");
 	});
 
 	database.ref('Turn').on("value", function(snapshot){
+		var p1name;
+		var p2name; 
+		database.ref('Players').on("value", function(snapshot){
+			p1name = snapshot.child("Player1/name").val();
+			p2name = snapshot.child("Player2/name").val();
+		});
+
 		if (snapshot.val() === 1){
+			$(".gameEndText").text(p1name + "'s turn");
 			if (myUserID === 1){
-				// $(".p1buttons").show();
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
 			}
 		}
 
 		else if (snapshot.val() === 2){
+			$(".gameEndText").text(p2name + "'s turn");
 			if (myUserID === 2){
-				// $(".p2buttons").show();
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
-
 			}
 		}
 
@@ -191,23 +174,16 @@ $(function(){
 			}
 
 			else {
-				// console.log("turn1");
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
 				database.ref('Turn').set("end");	
 			}
 		});
 	});
 
-	// function resetButtons(div){
-	// 	div.empty()
-	// 	.append('<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">')
-	// 	.append('<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">')
-	// 	.append('<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">')
-	// }
 
 	function resetGame(){
 		database.ref("Turn").set(1);
-		$(".gameEndText").text("");
+		// $(".gameEndText").text("Player 1's turn");
 		$(".p2buttons").hide();
 		database.ref("Players/Player1/Hand").remove();
 		database.ref("Players/Player1/Hand").remove();
@@ -237,7 +213,6 @@ $(function(){
 			p2winslosses[1] = snapshot.child("Player2/losses").val()
 		});
 
-		console.log(p1winslosses);
 		$(".p1buttons").html("<h2>" + p1hand + "</h2>").show();
 		$(".p2buttons").html("<h2>" + p2hand + "</h2>").show();
 

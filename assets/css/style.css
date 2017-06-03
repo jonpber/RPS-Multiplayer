@@ -8,7 +8,7 @@ body {
 }
 
 .textBox {
-	height: 300px;
+	height: 375px;
 	border: 1px solid black;
 	text-align: left;
 	overflow: auto;
@@ -28,20 +28,13 @@ h1 {
 }
 
 h2 {
-	font-size: 30px;
+	font-size: 45px;
 	color: white;
-	margin-top: 10px;
+	margin-top: 20px;
 }
 
 h3 {
 	font-size: 20px;
-}
-
-.chatHeader {
-	background-color: #123638;
-	border: 1px solid black;
-	border-radius: 15px 15px 0 0;
-	color: white;
 }
 
 h4 {
@@ -51,8 +44,28 @@ h4 {
     text-shadow: 6px 4px 8px black;
 }
 
-h1, h2, h4, .chatHeader {
+h2, h5, .scoreboardScore {
+	font-family: 'scoreboard';
+	color: white;
+}
+
+h1, h4, .chatHeader {
 	font-family: 'Lobster', cursive;
+}
+
+.gameEndText, .noMargTop {
+	margin-top: 0;
+}
+
+.scoreboardScore {
+	font-size: 20px;
+}
+
+.chatHeader {
+	background-color: #123638;
+	border: 1px solid black;
+	border-radius: 15px 15px 0 0;
+	color: white;
 }
 
 .p1text, .p2text {
@@ -77,6 +90,11 @@ input {
 	font-family: 'Poppins', sans-serif;
 }
 
+@font-face {
+	font-family: 'scoreboard';
+	src: url("../fonts/TIMES_SQ.ttf");
+}
+
 .nameInputBox {
 	height: 50px;
 	border-radius: 10px 0 0 10px;
@@ -95,11 +113,18 @@ input {
 	color: white;
 }
 
+.gameSquare {
+	background: #0f191a;
+	border: 2px solid black;
+	border-radius: 15px;
+	height: 475px;
+}
+
+
 .square {
 	height: 150px;
 	border: 1px dashed white;
-	margin-top: 55px;
-	margin-left: 20px;
+	margin: 35px auto 0;
 	width: 150px;
 }
 
@@ -119,7 +144,9 @@ p {
 }
 
 .gameButtons {
-	width: 75px;
+	width: 40px;
+	height: 50px;
+	margin: 20px;
 }
 
 .chatInput, .chatSubmit {
@@ -151,20 +178,19 @@ p {
 	display: none;
 }
 
-.buttonDrawer {
-	background-color: #91a8b5;
-	border-bottom: 3px solid black;
-	border-left: 3px solid black;
-	border-right: 3px solid black;
-	display: none;
-	border-radius: 0 0 15px 15px;
+hr {
+	margin-top: 29px;
+    border-top: 1px solid #eee;
+    width: 95%;
 }
 
-.gameSquare {
-	background: #0f191a;
-	border: 2px solid black;
-	border-radius: 15px;
-	height: 348px;
+.buttonDrawer {
+	background-color: #293a3c;
+	border-bottom: 2px solid black;
+	border-left: 2px solid black;
+	border-right: 2px solid black;
+	display: none;
+	border-radius: 0 0 15px 15px;
 }
 
 .gameSquare, .buttonDrawer, .chatHeader, .textBox, .chatSubmit, .chatInput{
@@ -173,4 +199,11 @@ p {
 
 .nameSubmit, .nameInputBox  {
 	box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.51);
+}
+.vertCenter {
+	margin: auto;
+}
+
+.borderRight {
+	border-right: 2px dotted #171c1c;
 }
