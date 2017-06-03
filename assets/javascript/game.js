@@ -54,7 +54,7 @@ $(function(){
 			}
 			myUserID = parseInt($(this).attr("data-player"));
 			addPlayer (myName, myUserID);
-			database.ref("Chat/Message").set(myName + " is now Player " + myUserID);
+			database.ref("Chat/Message").set("~" + myName + " is now Player " + myUserID + "~");
 			database.ref('Players/Player' + myUserID).onDisconnect().remove();
 			database.ref('Lobby/' + myName).remove();
 		}
@@ -304,10 +304,6 @@ $(function(){
 
 	function updateChat(array){
 		$(".textBox").empty();
-		if (array.length === null){
-			array = [];
-		}
-		
 		if (Array.isArray(array)){
 			for (var i =0; i < array.length; i++){
 				var pTemp = $("<p>").text(array[i]);
