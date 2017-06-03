@@ -87,7 +87,7 @@ $(function(){
 		$(".chatInput").val("");
 		if (chatText != ""){
 			database.ref('Players/Player' + myUserID).once("value").then(function(snapshot){
-				var newText = $("<p>" + myName + ": " + chatText + "</p>").appendTo(".textBox");
+				var newText = $("<p><b>" + myName + "</b>: " + chatText + "</p>").appendTo(".textBox");
 				database.ref("Chat").set({log: $(".textBox").html()});
 				newText.css("color", "green");
 				$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
@@ -137,8 +137,7 @@ $(function(){
 
 		else if (Object.keys(snapshot.val()).length === 1) {
 			database.ref("Turn").remove();
-			$(".p1buttons").hide()
-			$(".p2buttons").hide();
+			$(".buttonDrawer").slideUp()
 			database.ref("Players/Player1/Hand").remove();
 		}
 
