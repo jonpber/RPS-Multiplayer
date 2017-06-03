@@ -90,7 +90,6 @@ $(function(){
 				var newText = $("<p><b>" + myName + "</b>: " + chatText + "</p>").appendTo(".textBox");
 				database.ref("Chat").set({log: $(".textBox").html()});
 				newText.css("color", "green");
-				$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
 			});
 		}
 	})
@@ -105,7 +104,7 @@ $(function(){
 		}
 
 		else {
-			$("#p1").text("Waiting for Player 1");
+			$("#p1").text("");
 			$(".p1Spot").attr("data-occupied", "empty");
 		}
 	});
@@ -120,7 +119,7 @@ $(function(){
 		}
 
 		else {
-			$("#p2").text("Waiting for Player 2");
+			$("#p2").text("");
 			$(".p2Spot").attr("data-occupied", "empty");
 		}
 	});
@@ -137,7 +136,9 @@ $(function(){
 
 		else if (Object.keys(snapshot.val()).length === 1) {
 			database.ref("Turn").remove();
-			$(".buttonDrawer").slideUp()
+			$(".buttonDrawer").slideUp("normal", function(){
+				$(".gameSquare").css("border-radius", "15px");
+			});
 			database.ref("Players/Player1/Hand").remove();
 		}
 
@@ -150,13 +151,15 @@ $(function(){
 
 	database.ref('Chat').on("value", function(snapshot){
 		$(".textBox").html(snapshot.child("log").val());
-		$(".p" + myUserID + "text").css("color", "green");
+		$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
+		// $(".p" + myUserID + "text").css("color", "green");
 	});
 
 	database.ref('Turn').on("value", function(snapshot){
 		if (snapshot.val() === 1){
 			if (myUserID === 1){
 				// $(".p1buttons").show();
+				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
 			}
 		}
@@ -164,6 +167,7 @@ $(function(){
 		else if (snapshot.val() === 2){
 			if (myUserID === 2){
 				// $(".p2buttons").show();
+				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
 
 			}
@@ -176,7 +180,9 @@ $(function(){
 
 	$(document).on("click", ".gameButtons", function(){
 		var tmpText = $(this).attr("data-hand");
-		$(".buttonDrawer").slideUp();
+		$(".buttonDrawer").slideUp("normal", function(){
+				$(".gameSquare").css("border-radius", "15px");
+			});
 		database.ref('Players/Player' + myUserID + '/Hand').set(tmpText);
 		database.ref('Turn').once("value").then(function(snapshot){
 			if (snapshot.val() === 1){
@@ -297,7 +303,6 @@ $(function(){
 		if (snapshot.val() !== null){
 			$(".textBox").append("<p class='adminMessage'>" + snapshot.val() + "</p>");
 			database.ref("Chat").set({log: $(".textBox").html()});
-			$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
 		}
 	})
 

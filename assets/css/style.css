@@ -12,12 +12,13 @@ body {
 	border: 1px solid black;
 	text-align: left;
 	overflow: auto;
+	background-color: white;
 /*	border-radius: 15px 15px 0 0;*/
 }
 
 h1 {
-	font-size: 45px;
-	margin: 10px;
+	font-size: 52px;
+	margin: 21px;
 	color: white;
 	text-shadow: 6px 4px 8px black;
 }
@@ -28,6 +29,8 @@ h1 {
 
 h2 {
 	font-size: 30px;
+	color: white;
+	margin-top: 10px;
 }
 
 h3 {
@@ -92,13 +95,12 @@ input {
 	color: white;
 }
 
-.square, .textBox {
-	background-color: white;
-}
-
 .square {
-	height: 345px;
-	border: 1px solid black;
+	height: 150px;
+	border: 1px dashed white;
+	margin-top: 55px;
+	margin-left: 20px;
+	width: 150px;
 }
 
 .squareNoStyle {
@@ -134,7 +136,7 @@ p {
 }
 
 .chatSubmit {
-border-radius: 0 0 15px 0;
+	border-radius: 0 0 15px 0;
 }
 
 .noPadRight {
@@ -155,9 +157,20 @@ border-radius: 0 0 15px 0;
 	border-left: 3px solid black;
 	border-right: 3px solid black;
 	display: none;
+	border-radius: 0 0 15px 15px;
 }
 
 .gameSquare {
-	background: #111518;
+	background: #0f191a;
 	border: 2px solid black;
+	border-radius: 15px;
+	height: 348px;
+}
+
+.gameSquare, .buttonDrawer, .chatHeader, .textBox, .chatSubmit, .chatInput{
+	box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.51);
+}
+
+.nameSubmit, .nameInputBox  {
+	box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.51);
 }
