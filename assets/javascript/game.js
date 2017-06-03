@@ -13,7 +13,7 @@ $(function(){
   // Get a reference to the database service
 	var database = firebase.database();
 	var myUserID;
-	var myName;
+	var myName = "";
 	var userRef;
 
 	function addPlayer(name, num) {
