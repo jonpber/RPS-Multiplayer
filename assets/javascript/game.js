@@ -17,9 +17,9 @@ $(function(){
 	var userRef;
 	var spinningIconTimer;
 	var spinnerCounter = 0;
-	var iconsArray = ["<img src='assets/images/Rock.png' class='selectIcon'>", 
-	"<img src='assets/images/Paper.png' class='selectIcon'>", 
-	"<img src='assets/images/Scissors.png' class='selectIcon'>"];
+	var iconsArray = ["<img src='assets/images/Rock1.png' class='selectIcon'>", 
+	"<img src='assets/images/Paper1.png' class='selectIcon'>", 
+	"<img src='assets/images/Scissors1.png' class='selectIcon'>"];
 
 	function addPlayer(name, num) {
 	  database.ref('Players/Player' + myUserID).set({
@@ -210,8 +210,8 @@ $(function(){
 		else if (snapshot.val() === "end"){
 			clearInterval(spinningIconTimer);
 			database.ref("Players").once("value").then(function(snapshot){
-				$(".p1Spot").children().html("<img src='assets/images/" + snapshot.child("Player1/Hand").val() + ".png' class='selectIcon'>");
-				$(".p2Spot").children().html("<img src='assets/images/" + snapshot.child("Player2/Hand").val() + ".png' class='selectIcon'>");
+				$(".p1Spot").children().html("<img src='assets/images/" + snapshot.child("Player1/Hand").val() + "1.png' class='selectIcon'>");
+				$(".p2Spot").children().html("<img src='assets/images/" + snapshot.child("Player2/Hand").val() + "1.png' class='selectIcon'>");
 			})
 			checkWinner();
 		}
@@ -227,7 +227,7 @@ $(function(){
 			if (snapshot.val() === 1){
 				database.ref('Turn').set(2);
 				if (myUserID === 1 ){
-					$(".p1Spot").children().html("<img src='assets/images/" + tmpText + ".png' class='selectIcon'>");
+					$(".p1Spot").children().html("<img src='assets/images/" + tmpText + "1.png' class='selectIcon'>");
 				}
 
 			}
@@ -237,6 +237,14 @@ $(function(){
 				database.ref('Turn').set("end");
 			}
 		});
+	});
+
+	$(document).on("mouseover", ".drawerSection", function(){
+		$(this).children().attr("src", 'assets/images/' + $(this).children().attr("data-hand") + '.png');
+	});
+
+	$(document).on("mouseleave", ".drawerSection", function(){
+		$(this).children().attr("src", 'assets/images/' + $(this).children().attr("data-hand") + '1.png');
 	});
 
 
