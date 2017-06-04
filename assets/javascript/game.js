@@ -351,6 +351,7 @@ $(function(){
 				updateChat(arrayHolder);
 				database.ref('Chat/log').set(arrayHolder);
 			});
+			database.ref("Chat/Message").remove();
 		}
 	})
 
