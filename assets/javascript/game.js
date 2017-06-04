@@ -55,6 +55,8 @@ $(function(){
 		if ($(this).attr("data-occupied") === "empty"){
 			// database.ref('Players/Buffer').set(true);
 			if (myUserID !== undefined){
+				// database.ref('Lobby/' + myName).set(true);
+				// removePlayer(myUserID);
 				return;
 			}
 			myUserID = parseInt($(this).attr("data-player"));
