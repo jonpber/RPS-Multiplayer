@@ -87,6 +87,7 @@ $(function(){
 			$(".p1losses").text(snapshot.child("losses").val());
 			// $("#p1Score").css("display", "block");
 			$(".p1Spot").attr("data-occupied", "filled");
+			$(".p1Spot").children().html("<h5>Waiting for Player 2</h5>");
 		}
 
 		else {
@@ -102,6 +103,7 @@ $(function(){
 			$(".p2losses").text(snapshot.child("losses").val());
 			// $("#p2Score").css("display", "block");
 			$(".p2Spot").attr("data-occupied", "filled");
+			$(".p2Spot").children().html("<h5>Waiting for Player 1</h5>");
 		}
 
 		else {
@@ -157,11 +159,8 @@ $(function(){
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
 			}
-
-			else {
-
-			}
-		}
+			$(".p2Spot").children().html("<img src='assets/images/clock.gif' class='gameButtons'>");
+		}	
 
 		else if (snapshot.val() === 2){
 			$(".gameEndText").text(p2name + "'s turn");
@@ -199,7 +198,7 @@ $(function(){
 			else {
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
 				database.ref('Turn').set("end");
-				$(".p1Spot").children().html("<img src=url('images/");
+				// $(".p1Spot").children().html("<img src=url('images/");
 			}
 		});
 	});
@@ -210,8 +209,8 @@ $(function(){
 		database.ref("Players/Player1/Hand").remove();
 		
 		database.ref("Players").once("value").then(function(snapshot){
-			$(".p1Spot").children().html("<h2>?</h2>");
-			$(".p2Spot").children().html("<h2>?</h2>");
+			$(".p1Spot").children().html("<img src='assets/images/guy.png' class='gameButtons'>");
+			$(".p2Spot").children().html("<img src='assets/images/guy.png' class='gameButtons'>");
 		})
 	}
 
@@ -308,7 +307,6 @@ $(function(){
 				updateChat(arrayHolder);
 				database.ref('Chat/log').set(arrayHolder);
 			});
-			// database.ref("Chat").set({log: $(".textBox").html()});
 		}
 	})
 
