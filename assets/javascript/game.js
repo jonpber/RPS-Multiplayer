@@ -157,6 +157,10 @@ $(function(){
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
 			}
+
+			else {
+
+			}
 		}
 
 		else if (snapshot.val() === 2){
@@ -164,16 +168,21 @@ $(function(){
 			if (myUserID === 2){
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
+				$(".p1Spot").children().html("<h2>?</h2>");
 			}
 		}
 
 		else if (snapshot.val() === "end"){
+			database.ref("Players").once("value").then(function(snapshot){
+				$(".p1Spot").children().html("<img src='assets/images/" + snapshot.child("Player1/Hand").val() + ".png' class='gameButtons'>");
+				$(".p2Spot").children().html("<img src='assets/images/" + snapshot.child("Player2/Hand").val() + ".png' class='gameButtons'>");
+			})
 			checkWinner();
 		}
 	});
 
-	$(document).on("click", ".gameButtons", function(){
-		var tmpText = $(this).attr("data-hand");
+	$(document).on("click", ".drawerSection", function(){
+		var tmpText = $(this).children().attr("data-hand");
 		$(".buttonDrawer").slideUp("normal", function(){
 				$(".gameSquare").css("border-radius", "15px");
 			});
@@ -181,13 +190,16 @@ $(function(){
 		database.ref('Turn').once("value").then(function(snapshot){
 			if (snapshot.val() === 1){
 				database.ref('Turn').set(2);
-				$(".p1buttons").html("<h2>" + tmpText + "</h2>");
+				if (myUserID === 1 ){
+					$(".p1Spot").children().html("<img src='assets/images/" + tmpText + ".png' class='gameButtons'>");
+				}
+
 			}
 
 			else {
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
 				database.ref('Turn').set("end");
-				$(".p1Spot").children().html("<img src=url('assets/images/");
+				$(".p1Spot").children().html("<img src=url('images/");
 			}
 		});
 	});
@@ -195,14 +207,12 @@ $(function(){
 
 	function resetGame(){
 		database.ref("Turn").set(1);
-		// $(".gameEndText").text("Player 1's turn");
-		$(".p2buttons").hide();
 		database.ref("Players/Player1/Hand").remove();
-		database.ref("Players/Player1/Hand").remove();
-
-		if (myUserID !== 1){
-			$(".p1buttons").hide()
-		}
+		
+		database.ref("Players").once("value").then(function(snapshot){
+			$(".p1Spot").children().html("<h2>?</h2>");
+			$(".p2Spot").children().html("<h2>?</h2>");
+		})
 	}
 
 	function checkWinner(){
