@@ -38,21 +38,22 @@ $(function(){
 		var placeholderName = $(this).prev().val();
 		if (placeholderName != ""){
 			database.ref("Names").once("value").then(function(snapshot){
-				var tempNamesArray = snapshot.val();
-				if (tempNamesArray !== null){
+				if (snapshot.val() !== null){
+					var tempNamesArray = Object.keys(snapshot.val());
 					var isFound = false;
 					for (var i = 0; i < tempNamesArray.length; i++){
-						if (placeholderName === tempNamesArray[i]){
+						if (placeholderName.toLowerCase() === tempNamesArray[i].toLowerCase()){
 							isFound = true;
 						}
 					}
 
 					if (!isFound){
-						var arrayIndexVal = tempNamesArray.length
-						tempNamesArray[arrayIndexVal] = placeholderName;
-						database.ref("Names").set(tempNamesArray);
-						database.ref("Names/" + arrayIndexVal).onDisconnect().remove();
 						myName = placeholderName;
+						// var arrayIndexVal = tempNamesArray.length
+						tempNamesArray[myName] = placeholderName;
+						database.ref("Names/" + myName).set(true);
+						database.ref("Names/" + myName).onDisconnect().remove();
+						
 						database.ref("Chat/Message").onDisconnect().set("~" + myName + " has disconnected~");
 						$(".greetingH1").text("Hello, " + myName);
 						database.ref("Chat/Message").set("~" + placeholderName + " has connected~");
@@ -74,13 +75,13 @@ $(function(){
 
 				else {
 					myName = placeholderName;
+					database.ref("Names/" + myName).set(true);
+					database.ref("Names/" + myName).onDisconnect().remove();
 					$(".greetingH1").text("Hello, " + myName);
 					database.ref("Chat/Message").onDisconnect().set("~" + myName + " has disconnected~");
 					database.ref("Chat/Message").set("~" + myName + " has connected~");
 					database.ref("Lobby/" + myName).set(true);
 					database.ref("Lobby/" + myName).onDisconnect().remove();
-					database.ref("Names").set([myName]);
-					database.ref("Names/" + 0).onDisconnect().remove();
 
 					setTimeout(function(){
 						$(".contNameInput").hide();
