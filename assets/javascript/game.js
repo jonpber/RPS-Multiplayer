@@ -15,6 +15,11 @@ $(function(){
 	var myUserID;
 	var myName = "";
 	var userRef;
+	var spinningIconTimer;
+	var spinnerCounter = 0;
+	var iconsArray = ["<img src='assets/images/Rock.png' class='selectIcon'>", 
+	"<img src='assets/images/Paper.png' class='selectIcon'>", 
+	"<img src='assets/images/Scissors.png' class='selectIcon'>"];
 
 	function addPlayer(name, num) {
 	  database.ref('Players/Player' + myUserID).set({
@@ -87,12 +92,13 @@ $(function(){
 			$(".p1losses").text(snapshot.child("losses").val());
 			// $("#p1Score").css("display", "block");
 			$(".p1Spot").attr("data-occupied", "filled");
-			$(".p1Spot").children().html("<h5>Waiting for Player 2</h5>");
+			
 		}
 
 		else {
 			$("#p1").text("???");
 			$(".p1Spot").attr("data-occupied", "empty");
+			$(".p1Spot").children().html("<h5>P1</h5><h5>Click to Join</h5>");
 		}
 	});
 
@@ -103,17 +109,18 @@ $(function(){
 			$(".p2losses").text(snapshot.child("losses").val());
 			// $("#p2Score").css("display", "block");
 			$(".p2Spot").attr("data-occupied", "filled");
-			$(".p2Spot").children().html("<h5>Waiting for Player 1</h5>");
 		}
 
 		else {
 			$("#p2").text("???");
 			$(".p2Spot").attr("data-occupied", "empty");
+			$(".p2Spot").children().html("<h5>P2</h5><h5>Click to Join</h5>");
 		}
 	});
 
 	database.ref('Players').on("value", function(snapshot){
 		if (snapshot.val() === null){
+			clearInterval(spinningIconTimer);
 			database.ref("Turn").remove();
 			database.ref('Lobby').once("value").then(function(snapshot){
 				if(snapshot.val() === null){
@@ -123,11 +130,21 @@ $(function(){
 		}
 
 		else if (Object.keys(snapshot.val()).length === 1) {
+			clearInterval(spinningIconTimer);
 			database.ref("Turn").remove();
 			$(".buttonDrawer").slideUp("normal", function(){
 				$(".gameSquare").css("border-radius", "15px");
 			});
 			database.ref("Players/Player1/Hand").remove();
+			$(".gameEndText").text("Waiting for Players");
+
+			if ($(".p2Spot").attr("data-occupied") !== "filled"){
+				$(".p1Spot").children().html("<h5>Waiting for Player 2</h5>");
+			}
+
+			if ($(".p1Spot").attr("data-occupied") !== "filled"){
+				$(".p2Spot").children().html("<h5>Waiting for Player 1</h5>");
+			}
 		}
 
 		else if (Object.keys(snapshot.val()).length === 2) {
@@ -158,23 +175,43 @@ $(function(){
 			if (myUserID === 1){
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
+				$(".p1Spot").children().html("");
 			}
-			$(".p2Spot").children().html("<img src='assets/images/clock.gif' class='gameButtons'>");
+
+			else {
+				spinningIconTimer = setInterval(function(){
+					$(".p1Spot").children().html(iconsArray[spinnerCounter]);
+					spinnerCounter += 1;
+					spinnerCounter = spinnerCounter % 3;
+				}, 200)
+			}
+			
+			$(".p2Spot").children().html("");
 		}	
 
 		else if (snapshot.val() === 2){
+			clearInterval(spinningIconTimer);
 			$(".gameEndText").text(p2name + "'s turn");
 			if (myUserID === 2){
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
-				$(".p1Spot").children().html("<h2>?</h2>");
+				$(".p1Spot").children().html("<h2 class='unknownChoice'>?</h2>");
+			}
+
+			else {
+				spinningIconTimer = setInterval(function(){
+					$(".p2Spot").children().html(iconsArray[spinnerCounter]);
+					spinnerCounter += 1;
+					spinnerCounter = spinnerCounter % 3;
+				}, 200)
 			}
 		}
 
 		else if (snapshot.val() === "end"){
+			clearInterval(spinningIconTimer);
 			database.ref("Players").once("value").then(function(snapshot){
-				$(".p1Spot").children().html("<img src='assets/images/" + snapshot.child("Player1/Hand").val() + ".png' class='gameButtons'>");
-				$(".p2Spot").children().html("<img src='assets/images/" + snapshot.child("Player2/Hand").val() + ".png' class='gameButtons'>");
+				$(".p1Spot").children().html("<img src='assets/images/" + snapshot.child("Player1/Hand").val() + ".png' class='selectIcon'>");
+				$(".p2Spot").children().html("<img src='assets/images/" + snapshot.child("Player2/Hand").val() + ".png' class='selectIcon'>");
 			})
 			checkWinner();
 		}
@@ -190,7 +227,7 @@ $(function(){
 			if (snapshot.val() === 1){
 				database.ref('Turn').set(2);
 				if (myUserID === 1 ){
-					$(".p1Spot").children().html("<img src='assets/images/" + tmpText + ".png' class='gameButtons'>");
+					$(".p1Spot").children().html("<img src='assets/images/" + tmpText + ".png' class='selectIcon'>");
 				}
 
 			}
@@ -198,7 +235,6 @@ $(function(){
 			else {
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
 				database.ref('Turn').set("end");
-				// $(".p1Spot").children().html("<img src=url('images/");
 			}
 		});
 	});
@@ -209,8 +245,7 @@ $(function(){
 		database.ref("Players/Player1/Hand").remove();
 		
 		database.ref("Players").once("value").then(function(snapshot){
-			$(".p1Spot").children().html("<img src='assets/images/guy.png' class='gameButtons'>");
-			$(".p2Spot").children().html("<img src='assets/images/guy.png' class='gameButtons'>");
+			$(".p2Spot").children().html("");
 		})
 	}
 

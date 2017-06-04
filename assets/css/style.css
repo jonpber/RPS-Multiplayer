@@ -148,8 +148,18 @@ p {
 }
 
 .gameButtons {
-	height: 50px;
-	margin: 20px;
+	height: 70px;
+	margin: 10px;
+}
+
+.selectIcon {
+	height: 100px;
+	margin: -25px 0 0 -10px;
+}
+
+.unknownChoice {
+	font-size: 150px;
+	margin-top: -50px;
 }
 
 .chatInput, .chatSubmit {
@@ -243,5 +253,20 @@ hr {
 
 	.gameSquare {
 		height: 375px;
+	}
+
+	.unknownChoice {
+		font-size: 130px;
+		margin-top: -36px;
+	}
+
+	.gameButtons {
+		height: 50px;
+		margin: 10px 0;
+	}
+
+	.selectIcon {
+		height: 70px;
+		margin: -3px 0 0 -10px;
 	}
 }
