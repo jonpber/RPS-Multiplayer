@@ -55,8 +55,9 @@ $(function(){
 		if ($(this).attr("data-occupied") === "empty"){
 			// database.ref('Players/Buffer').set(true);
 			if (myUserID !== undefined){
-				removePlayer(myUserID);
-
+				// database.ref('Lobby/' + myName).set(true);
+				// removePlayer(myUserID);
+				return;
 			}
 			myUserID = parseInt($(this).attr("data-player"));
 			addPlayer (myName, myUserID);
@@ -351,6 +352,7 @@ $(function(){
 				updateChat(arrayHolder);
 				database.ref('Chat/log').set(arrayHolder);
 			});
+			database.ref("Chat/Message").remove();
 		}
 	})
 
