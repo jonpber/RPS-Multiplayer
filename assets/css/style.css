@@ -2,18 +2,7 @@ body {
 	background-image: url("../images/back.jpg");
 }
 
-.textBox, .chatInput {
-	display: block;
-	margin: auto;
-}
-
-.textBox {
-	height: 375px;
-	border: 1px solid black;
-	text-align: left;
-	overflow: auto;
-	background-color: white;
-}
+/*Headers and text CSS*/
 
 h1 {
 	font-size: 52px;
@@ -56,6 +45,11 @@ h1, h4, .chatHeader {
 	font-family: 'Lobster', cursive;
 }
 
+p {
+	word-wrap: break-word;
+	padding: 5px 15px;
+}
+
 .gameEndText, .noMargTop {
 	margin-top: 0;
 }
@@ -75,9 +69,33 @@ h1, h4, .chatHeader {
 	color: black;
 }
 
+.nameInputBox, .nameSubmit, p, .chatInput, .chatSubmit {
+	font-family: 'Poppins', sans-serif;
+}
+
+@font-face {
+	font-family: 'scoreboard';
+	src: url("../fonts/timeSQ.TTF");
+}
+
+/*The chat message that appears when the server says something in chat*/
 .adminMessage {
 	background-color: #4e7376;
 	color: white;
+}
+
+/*Input fields and text input*/
+.textBox, .chatInput {
+	display: block;
+	margin: auto;
+}
+
+.textBox {
+	height: 375px;
+	border: 1px solid black;
+	text-align: left;
+	overflow: auto;
+	background-color: white;
 }
 
 input {
@@ -86,17 +104,6 @@ input {
 
 .nameInput {
 	padding: 25px;
-/*	margin-top: 25%;*/
-}
-
-
-.nameInputBox, .nameSubmit, p, .chatInput, .chatSubmit {
-	font-family: 'Poppins', sans-serif;
-}
-
-@font-face {
-	font-family: 'scoreboard';
-	src: url("../fonts/timeSQ.TTF");
 }
 
 .nameInputBox {
@@ -117,13 +124,26 @@ input {
 	color: white;
 }
 
+.chatInput, .chatSubmit {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 25px;
+}
+
+.chatInput {
+ 	border-radius: 0 0 0 15px;
+ 	padding-left: 15px;
+
+}
+
+/*Borders and game squares*/
 .gameSquare {
 	background: #0f191a;
 	border: 2px solid black;
 	border-radius: 15px;
 	height: 475px;
 }
-
 
 .square {
 	height: 150px;
@@ -138,15 +158,39 @@ input {
 	color: white;
 }
 
+.contMain {
+	display: none;
+}
+
+hr {
+	margin-top: 29px;
+    border-top: 1px solid #eee;
+    width: 95%;
+}
+
+/*Buttons, Button Drawers, and other handlers*/
+.chatSubmit {
+	border-radius: 0 0 15px 0;
+}
+
 .p1GameUI, #p1Score, .p1buttons, .p2GameUI, #p2Score, .p2buttons {
 	display: none;
 }
 
-p {
-	word-wrap: break-word;
-	padding: 5px 15px;
+.buttonDrawer {
+	background-color: #293a3c;
+	border-bottom: 2px solid black;
+	border-left: 2px solid black;
+	border-right: 2px solid black;
+	display: none;
+	border-radius: 0 0 15px 15px;
 }
 
+.borderRight {
+	border-right: 2px dotted #171c1c;
+}
+
+/*RPS hand Images and icons to track game*/
 .gameButtons {
 	height: 70px;
 	margin: 10px;
@@ -162,21 +206,8 @@ p {
 	margin-top: -50px;
 }
 
-.chatInput, .chatSubmit {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 25px;
-}
-
-.chatInput {
- 	border-radius: 0 0 0 15px;
- 	padding-left: 15px;
-
-}
-
-.chatSubmit {
-	border-radius: 0 0 15px 0;
+.vertCenter {
+	margin-top: 45px;
 }
 
 .noPadRight {
@@ -187,25 +218,8 @@ p {
 	padding-left: 0;
 }
 
-.contMain {
-	display: none;
-}
 
-hr {
-	margin-top: 29px;
-    border-top: 1px solid #eee;
-    width: 95%;
-}
-
-.buttonDrawer {
-	background-color: #293a3c;
-	border-bottom: 2px solid black;
-	border-left: 2px solid black;
-	border-right: 2px solid black;
-	display: none;
-	border-radius: 0 0 15px 15px;
-}
-
+/*Shadows to page blocks*/
 .gameSquare, .buttonDrawer, .chatHeader, .textBox, .chatSubmit, .chatInput{
 	box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.51);
 }
@@ -213,14 +227,10 @@ hr {
 .nameSubmit, .nameInputBox  {
 	box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.51);
 }
-.vertCenter {
-	margin-top: 45px;
-}
 
-.borderRight {
-	border-right: 2px dotted #171c1c;
-}
 
+
+/*Scaling options for responsive design*/
 @media screen and (max-width: 992px){
 	.chatHeader {
 		margin-top: 20px;
