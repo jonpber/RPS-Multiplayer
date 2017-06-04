@@ -95,7 +95,7 @@ input {
 
 @font-face {
 	font-family: 'scoreboard';
-	src: url("../fonts/timeSQ.ttf");
+	src: url("../fonts/timeSQ.TTF");
 }
 
 .nameInputBox {
