@@ -13,8 +13,13 @@ $(function(){
   // Get a reference to the database service
 	var database = firebase.database();
 	var myUserID;
-	var myName;
+	var myName = "";
 	var userRef;
+	var spinningIconTimer;
+	var spinnerCounter = 0;
+	var iconsArray = ["<img src='assets/images/Rock.png' class='selectIcon'>", 
+	"<img src='assets/images/Paper.png' class='selectIcon'>", 
+	"<img src='assets/images/Scissors.png' class='selectIcon'>"];
 
 	function addPlayer(name, num) {
 	  database.ref('Players/Player' + myUserID).set({
@@ -30,11 +35,11 @@ $(function(){
 
 	$(".nameSubmit").on("click", function(){
 		var placeholderName = $(this).prev().val();
-		database.ref("Chat/Message").onDisconnect().set(placeholderName + " has disconnected");
+		database.ref("Chat/Message").onDisconnect().set("~" + placeholderName + " has disconnected~");
 		if (placeholderName != ""){
 			myName = placeholderName;
 			$(".greetingH1").text("Hello, " + myName);
-			database.ref("Chat/Message").set(placeholderName + " has connected");
+			database.ref("Chat/Message").set("~" + placeholderName + " has connected~");
 			database.ref("Lobby/" + myName).set(true);
 			database.ref("Lobby/" + myName).onDisconnect().remove();
 
@@ -54,7 +59,7 @@ $(function(){
 			}
 			myUserID = parseInt($(this).attr("data-player"));
 			addPlayer (myName, myUserID);
-			database.ref("Chat/Message").set(myName + " is now Player " + myUserID);
+			database.ref("Chat/Message").set("~" + myName + " is now Player " + myUserID + "~");
 			database.ref('Players/Player' + myUserID).onDisconnect().remove();
 			database.ref('Lobby/' + myName).remove();
 		}
@@ -64,10 +69,18 @@ $(function(){
 		var chatText = $(".chatInput").val();
 		$(".chatInput").val("");
 		if (chatText != ""){
-			database.ref('Players/Player' + myUserID).once("value").then(function(snapshot){
-				var newText = $("<p><b>" + myName + "</b>: " + chatText + "</p>").appendTo(".textBox");
-				database.ref("Chat").set({log: $(".textBox").html()});
-				newText.css("color", "green");
+			database.ref('Chat/log').once("value").then(function(snapshot){
+				// 	var newText = $("<p><b>" + myName + "</b>: " + chatText + "</p>").appendTo(".textBox");
+				
+				// 	newText.css("color", "green");
+				var arrayHolder = snapshot.val();
+				if (!Array.isArray(arrayHolder)){
+					arrayHolder = [];
+				}
+
+				arrayHolder[arrayHolder.length] = myName + ": " + chatText;
+				database.ref("Chat").set({log: arrayHolder});
+				updateChat(arrayHolder);
 			});
 		}
 	})
@@ -77,13 +90,15 @@ $(function(){
 			$("#p1").text(snapshot.child("name").val());
 			$(".p1wins").text(snapshot.child("wins").val());
 			$(".p1losses").text(snapshot.child("losses").val());
-			$("#p1Score").css("display", "block");
+			// $("#p1Score").css("display", "block");
 			$(".p1Spot").attr("data-occupied", "filled");
+			
 		}
 
 		else {
 			$("#p1").text("???");
 			$(".p1Spot").attr("data-occupied", "empty");
+			$(".p1Spot").children().html("<h5>P1</h5><h5>Click to Join</h5>");
 		}
 	});
 
@@ -92,32 +107,44 @@ $(function(){
 			$("#p2").text(snapshot.child("name").val());
 			$(".p2wins").text(snapshot.child("wins").val());
 			$(".p2losses").text(snapshot.child("losses").val());
-			$("#p2Score").css("display", "block");
+			// $("#p2Score").css("display", "block");
 			$(".p2Spot").attr("data-occupied", "filled");
 		}
 
 		else {
 			$("#p2").text("???");
 			$(".p2Spot").attr("data-occupied", "empty");
+			$(".p2Spot").children().html("<h5>P2</h5><h5>Click to Join</h5>");
 		}
 	});
 
 	database.ref('Players').on("value", function(snapshot){
 		if (snapshot.val() === null){
+			clearInterval(spinningIconTimer);
 			database.ref("Turn").remove();
 			database.ref('Lobby').once("value").then(function(snapshot){
 				if(snapshot.val() === null){
-					database.ref('Chat').remove();
+					database.ref('Chat').set({log: []});
 				}
 			})
 		}
 
 		else if (Object.keys(snapshot.val()).length === 1) {
+			clearInterval(spinningIconTimer);
 			database.ref("Turn").remove();
 			$(".buttonDrawer").slideUp("normal", function(){
 				$(".gameSquare").css("border-radius", "15px");
 			});
 			database.ref("Players/Player1/Hand").remove();
+			$(".gameEndText").text("Waiting for Players");
+
+			if ($(".p2Spot").attr("data-occupied") !== "filled"){
+				$(".p1Spot").children().html("<h5>Waiting for Player 2</h5>");
+			}
+
+			if ($(".p1Spot").attr("data-occupied") !== "filled"){
+				$(".p2Spot").children().html("<h5>Waiting for Player 1</h5>");
+			}
 		}
 
 		else if (Object.keys(snapshot.val()).length === 2) {
@@ -128,8 +155,11 @@ $(function(){
 	});
 
 	database.ref('Chat').on("value", function(snapshot){
-		$(".textBox").html(snapshot.child("log").val());
-		$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
+		var arrayHolder = snapshot.child("log").val();
+		if (!Array.isArray(arrayHolder)){
+			arrayHolder = [];
+		}
+		updateChat(arrayHolder);
 	});
 
 	database.ref('Turn').on("value", function(snapshot){
@@ -145,24 +175,50 @@ $(function(){
 			if (myUserID === 1){
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
+				$(".p1Spot").children().html("");
 			}
-		}
+
+			else {
+				spinningIconTimer = setInterval(function(){
+					$(".p1Spot").children().html(iconsArray[spinnerCounter]);
+					spinnerCounter += 1;
+					spinnerCounter = spinnerCounter % 3;
+				}, 200)
+			}
+			
+			$(".p2Spot").children().html("");
+		}	
 
 		else if (snapshot.val() === 2){
+			clearInterval(spinningIconTimer);
 			$(".gameEndText").text(p2name + "'s turn");
 			if (myUserID === 2){
 				$(".gameSquare").css("border-radius", "15px 15px 0 0");
 				$(".buttonDrawer").slideDown();
+				$(".p1Spot").children().html("<h2 class='unknownChoice'>?</h2>");
+			}
+
+			else {
+				spinningIconTimer = setInterval(function(){
+					$(".p2Spot").children().html(iconsArray[spinnerCounter]);
+					spinnerCounter += 1;
+					spinnerCounter = spinnerCounter % 3;
+				}, 200)
 			}
 		}
 
 		else if (snapshot.val() === "end"){
+			clearInterval(spinningIconTimer);
+			database.ref("Players").once("value").then(function(snapshot){
+				$(".p1Spot").children().html("<img src='assets/images/" + snapshot.child("Player1/Hand").val() + ".png' class='selectIcon'>");
+				$(".p2Spot").children().html("<img src='assets/images/" + snapshot.child("Player2/Hand").val() + ".png' class='selectIcon'>");
+			})
 			checkWinner();
 		}
 	});
 
-	$(document).on("click", ".gameButtons", function(){
-		var tmpText = $(this).attr("data-hand");
+	$(document).on("click", ".drawerSection", function(){
+		var tmpText = $(this).children().attr("data-hand");
 		$(".buttonDrawer").slideUp("normal", function(){
 				$(".gameSquare").css("border-radius", "15px");
 			});
@@ -170,12 +226,15 @@ $(function(){
 		database.ref('Turn').once("value").then(function(snapshot){
 			if (snapshot.val() === 1){
 				database.ref('Turn').set(2);
-				$(".p1buttons").html("<h2>" + tmpText + "</h2>");
+				if (myUserID === 1 ){
+					$(".p1Spot").children().html("<img src='assets/images/" + tmpText + ".png' class='selectIcon'>");
+				}
+
 			}
 
 			else {
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
-				database.ref('Turn').set("end");	
+				database.ref('Turn').set("end");
 			}
 		});
 	});
@@ -183,14 +242,11 @@ $(function(){
 
 	function resetGame(){
 		database.ref("Turn").set(1);
-		// $(".gameEndText").text("Player 1's turn");
-		$(".p2buttons").hide();
 		database.ref("Players/Player1/Hand").remove();
-		database.ref("Players/Player1/Hand").remove();
-
-		if (myUserID !== 1){
-			$(".p1buttons").hide()
-		}
+		
+		database.ref("Players").once("value").then(function(snapshot){
+			$(".p2Spot").children().html("");
+		})
 	}
 
 	function checkWinner(){
@@ -276,9 +332,35 @@ $(function(){
 
 	database.ref("Chat/Message").on("value", function(snapshot){
 		if (snapshot.val() !== null){
-			$(".textBox").append("<p class='adminMessage'>" + snapshot.val() + "</p>");
-			database.ref("Chat").set({log: $(".textBox").html()});
+			var tempAdminMessage = snapshot.val();
+			database.ref('Chat/log').once("value").then(function(snapshot1){
+				var arrayHolder = snapshot1.val();
+				if (!Array.isArray(arrayHolder)){
+					arrayHolder = [];
+				}
+				arrayHolder[arrayHolder.length] = tempAdminMessage;
+				updateChat(arrayHolder);
+				database.ref('Chat/log').set(arrayHolder);
+			});
 		}
 	})
 
+	function updateChat(array){
+		$(".textBox").empty();
+		if (Array.isArray(array)){
+			for (var i =0; i < array.length; i++){
+				var pTemp = $("<p>").text(array[i]);
+				if(array[i].substring(0, myName.length) === myName){
+					pTemp.css("color", "green");
+				}
+
+				else if (array[i].substring(0, 1) === "~") {
+					pTemp.css("color", "white")
+					.css("background-color", "#607f80");
+				}
+				$(".textBox").append(pTemp);
+			}
+			$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
+		}
+	}
 })

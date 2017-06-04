@@ -22,7 +22,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-xs-8 text-center">
+			<div class="col-xs-12 col-md-8 text-center">
 				<div class="gameSquare">
 					<div class="row">
 						<div class="col-xs-6">
@@ -77,44 +77,22 @@
 							<h2 class="gameEndText">Waiting for Players</h2>
 						</div>
 					</div>
-<!-- 						<div class="col-xs-4 text-center">
-							<div class="square p1Spot" data-occupied="empty" data-player=1>
-								<h2 id="p1">Waiting for Player 1</h2>
-								<div class="p1buttons">
-								</div>
-								<h3 id="p1Score">Wins:<span class="p1wins">0</span> Losses:<span class="p1losses">0</span></h3>
-							</div>
-						</div>
-						<div class="col-xs-4 text-center">
-							<div class="squareNoStyle">
-								<h2 class="gameEndText"></h2>
-							</div>
-						</div>
 
-						<div class="col-xs-4 text-center">
-							<div class="square p2Spot" data-occupied="empty" data-player=2>
-								<h2 id="p2">Waiting for Player 2</h2>
-								<div class="p2buttons">
-								</div>
-								<h3 id="p2Score">Wins:<span class="p2wins">0</span> Losses:<span class="p2losses">0</span></h3>
-							</div>				
-						</div> -->
-					<!-- </div> -->
 				</div>
 				<div class="col-xs-12 buttonDrawer">
-					<div class="col-xs-4 borderRight">
+					<div class="col-xs-4 borderRight drawerSection">
 						<img src="assets/images/rock.png" class="gameButtons" data-hand="Rock">
 					</div>
-					<div class="col-xs-4 borderRight">
+					<div class="col-xs-4 borderRight drawerSection">
 						<img src="assets/images/paper.png" class="gameButtons" data-hand="Paper">
 					</div>
-					<div class="col-xs-4">
+					<div class="col-xs-4 drawerSection">
 						<img src="assets/images/scissors.png" class="gameButtons" data-hand="Scissors">
 					</div>
 				</div>
 			</div>
 
-			<div class="col-xs-4 text-center text-center">
+			<div class="col-xs-12 col-md-4 text-center text-center">
 				<div class="text-center">
 					<h3 class="chatHeader">Chat</h3>
 				</div>
@@ -135,7 +113,7 @@
 		<div class="nameInput">
 			<h1 class="greetingH1">Rock Paper Scissors Online</h1>
 			<h4>Please Enter Your Name</h4>
-			<input class="nameInputBox" type="playerName" name="" maxlength="12"><button class="nameSubmit">Submit</button>
+			<input class="nameInputBox" type="playerName" name="" maxlength="12" pattern="[A-Za-z]"><button class="nameSubmit">Submit</button>
 
 		</div>
 	</div>
@@ -145,19 +123,6 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 	<script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
-	<script>
-	// Initialize Firebase
-	// var config = {
-	// 	apiKey: "AIzaSyBfHzgSuQIsvGGusmlFAJziSECE7O4mbg4",
-	// 	authDomain: "rps-multiplayer-e9d13.firebaseapp.com",
-	// 	databaseURL: "https://rps-multiplayer-e9d13.firebaseio.com",
-	// 	projectId: "rps-multiplayer-e9d13",
-	// 	storageBucket: "rps-multiplayer-e9d13.appspot.com",
-	// 	messagingSenderId: "111624067463"
-	// };
-	// firebase.initializeApp(config);
-	</script>
-
 	<script src="assets/javascript/game.js"></script>
 </body>
 </html>

@@ -44,6 +44,10 @@ h4 {
     text-shadow: 6px 4px 8px black;
 }
 
+h5 {
+	font-size: 24px;
+}
+
 h2, h5, .scoreboardScore {
 	font-family: 'scoreboard';
 	color: white;
@@ -144,9 +148,18 @@ p {
 }
 
 .gameButtons {
-	width: 40px;
-	height: 50px;
-	margin: 20px;
+	height: 70px;
+	margin: 10px;
+}
+
+.selectIcon {
+	height: 100px;
+	margin: -25px 0 0 -10px;
+}
+
+.unknownChoice {
+	font-size: 150px;
+	margin-top: -50px;
 }
 
 .chatInput, .chatSubmit {
@@ -201,9 +214,59 @@ hr {
 	box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.51);
 }
 .vertCenter {
-	margin: auto;
+	margin-top: 45px;
 }
 
 .borderRight {
 	border-right: 2px dotted #171c1c;
+}
+
+@media screen and (max-width: 992px){
+	.chatHeader {
+		margin-top: 20px;
+	}
+
+	.textBox {
+		height: 250px;
+	}
+}
+
+@media screen and (max-width: 625px){
+	h1, h2 {
+		font-size: 35px;
+	}
+}
+
+@media screen and (max-width: 450px){
+	.square {
+		width: 100px;
+		height: 100px;
+	}
+
+	.vertCenter {
+		margin-top: 15px;
+	}
+
+	h1, h2 {
+		font-size: 25px;
+	}
+
+	.gameSquare {
+		height: 375px;
+	}
+
+	.unknownChoice {
+		font-size: 130px;
+		margin-top: -36px;
+	}
+
+	.gameButtons {
+		height: 50px;
+		margin: 10px 0;
+	}
+
+	.selectIcon {
+		height: 70px;
+		margin: -3px 0 0 -10px;
+	}
 }
