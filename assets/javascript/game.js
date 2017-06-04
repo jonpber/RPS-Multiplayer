@@ -18,8 +18,9 @@ $(function(){
 	var spinningIconTimer;
 	var spinnerCounter = 0;
 	var iconsArray = ["<img src='assets/images/Rock1.png' class='selectIcon'>", 
+	"<img src='assets/images/Scissors1.png' class='selectIcon'>",
 	"<img src='assets/images/Paper1.png' class='selectIcon'>", 
-	"<img src='assets/images/Scissors1.png' class='selectIcon'>"];
+	];
 
 	function addPlayer(name, num) {
 	  database.ref('Players/Player' + myUserID).set({
