@@ -272,6 +272,7 @@ $(function(){
 						database.ref("Lobby/" + myName).set(true);
 						database.ref("Lobby/" + myName).onDisconnect().remove();
 						$(".nameInputBox").attr('disabled','disabled');
+						$(".nameSubmit").attr('disabled','disabled');
 
 						//The game is started after a small delay
 						setTimeout(function(){
@@ -298,6 +299,7 @@ $(function(){
 					database.ref("Lobby/" + myName).set(true);
 					database.ref("Lobby/" + myName).onDisconnect().remove();
 					$(".nameInputBox").attr('disabled','disabled');
+					$(".nameSubmit").attr('disabled','disabled');
 
 					setTimeout(function(){
 						$(".contNameInput").hide();
