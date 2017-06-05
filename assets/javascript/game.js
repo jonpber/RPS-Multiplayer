@@ -79,6 +79,7 @@ $(function(){
 			$(".p1wins").text(snapshot.child("wins").val());
 			$(".p1losses").text(snapshot.child("losses").val());
 			$(".p1Spot").attr("data-occupied", "filled");
+			$(".p1Spot").css("border", "2px double white");
 			
 		}
 
@@ -86,6 +87,7 @@ $(function(){
 			$("#p1").text("???");
 			$(".p1Spot").attr("data-occupied", "empty");
 			$(".p1Spot").children().html("<h5>P1</h5><h5>Click to Join</h5>");
+			$(".p1Spot").css("border", "2px dashed white");
 		}
 	});
 
@@ -96,12 +98,14 @@ $(function(){
 			$(".p2wins").text(snapshot.child("wins").val());
 			$(".p2losses").text(snapshot.child("losses").val());
 			$(".p2Spot").attr("data-occupied", "filled");
+			$(".p2Spot").css("border", "2px double white");
 		}
 
 		else {
 			$("#p2").text("???");
 			$(".p2Spot").attr("data-occupied", "empty");
 			$(".p2Spot").children().html("<h5>P2</h5><h5>Click to Join</h5>");
+			$(".p2Spot").css("border", "2px dashed white");
 		}
 	});
 
@@ -242,6 +246,7 @@ $(function(){
 		var placeholderName = $(this).prev().val().trim();
 		//If you aren't entering blank text
 		if (placeholderName != ""){
+
 			//Pulls down the object Names from the DB to compare your name to existing CURRENT players/lobby users
 			database.ref("Names").once("value").then(function(snapshot){
 				if (snapshot.val() !== null){
@@ -266,6 +271,7 @@ $(function(){
 						database.ref("Chat/Message").set("~" + placeholderName + " has connected~");
 						database.ref("Lobby/" + myName).set(true);
 						database.ref("Lobby/" + myName).onDisconnect().remove();
+						$(".nameInputBox").attr('disabled','disabled');
 
 						//The game is started after a small delay
 						setTimeout(function(){
@@ -291,6 +297,7 @@ $(function(){
 					database.ref("Chat/Message").set("~" + myName + " has connected~");
 					database.ref("Lobby/" + myName).set(true);
 					database.ref("Lobby/" + myName).onDisconnect().remove();
+					$(".nameInputBox").attr('disabled','disabled');
 
 					setTimeout(function(){
 						$(".contNameInput").hide();
@@ -308,6 +315,8 @@ $(function(){
 			if (myUserID !== undefined){
 				return;
 			}
+
+
 			myUserID = parseInt($(this).attr("data-player"));
 			addPlayer (myName, myUserID);
 			database.ref("Chat/Message").set("~" + myName + " is now Player " + myUserID + "~");

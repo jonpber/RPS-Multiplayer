@@ -147,7 +147,7 @@ input {
 
 .square {
 	height: 150px;
-	border: 1px dashed white;
+	border: 2px dashed white;
 	margin: 35px auto 0;
 	width: 150px;
 }
