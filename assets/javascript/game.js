@@ -24,7 +24,7 @@ $(function(){
 
 	//Listens for changes in Players path of database and handles lobby users  joining game or dropping
 	database.ref('Players').on("value", function(snapshot){
-		if (snapshot.val() === null){
+		if (!snapshot.exists()){
 			//stops the switching hand animation if players drop
 			clearInterval(spinningIconTimer);
 
@@ -32,7 +32,7 @@ $(function(){
 			database.ref("Turn").remove();
 			database.ref('Lobby').once("value").then(function(snapshot){
 				//if lobby is also totally empty, will erase chat history
-				if(snapshot.val() === null){
+				if(!snapshot.exists()){
 					database.ref('Chat').set({log: []});
 				}
 			})
@@ -74,7 +74,7 @@ $(function(){
 
 	//Listens to changes in Player 1, such as wins, losses, dropping out from game and other.
 	database.ref('Players/Player1').on("value", function(snapshot){
-		if (snapshot.val() !== null){
+		if (snapshot.exists()){
 			$("#p1").text(snapshot.child("name").val());
 			$(".p1wins").text(snapshot.child("wins").val());
 			$(".p1losses").text(snapshot.child("losses").val());
@@ -93,7 +93,7 @@ $(function(){
 
 	//Listens to changes in Player 2, such as wins, losses, dropping out from game and other.
 	database.ref('Players/Player2').on("value", function(snapshot){
-		if (snapshot.val() !== null){
+		if (snapshot.exists()){
 			$("#p2").text(snapshot.child("name").val());
 			$(".p2wins").text(snapshot.child("wins").val());
 			$(".p2losses").text(snapshot.child("losses").val());
@@ -190,7 +190,7 @@ $(function(){
 	//Listens for changes in Admin chat messages, such as if a player connects or disconnects
 	database.ref("Chat/Message").on("value", function(snapshot){
 		//If there is a value of a message
-		if (snapshot.val() !== null){
+		if (snapshot.exists()){
 			var tempAdminMessage = snapshot.val();
 			//That value is appended to an array and then set.
 			database.ref('Chat/log').once("value").then(function(snapshot1){
@@ -249,7 +249,7 @@ $(function(){
 
 			//Pulls down the object Names from the DB to compare your name to existing CURRENT players/lobby users
 			database.ref("Names").once("value").then(function(snapshot){
-				if (snapshot.val() !== null){
+				if (snapshot.exists()){
 					var tempNamesArray = Object.keys(snapshot.val());
 					var isFound = false;
 					for (var i = 0; i < tempNamesArray.length; i++){
