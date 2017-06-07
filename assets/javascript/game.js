@@ -70,6 +70,8 @@ $(function(){
 				database.ref("Turn").set(1);
 			}
 		}
+	}, function(error){
+		console.log("Error code is " + error);
 	});
 
 	//Listens to changes in Player 1, such as wins, losses, dropping out from game and other.
@@ -107,6 +109,8 @@ $(function(){
 			$(".p2Spot").children().html("<h5>P2</h5><h5>Click to Join</h5>");
 			$(".p2Spot").css("border", "2px dashed white");
 		}
+	}, function(error){
+		console.log("Error code is " + error);
 	});
 
 	//Listens to changes in the Chat history and updates the chat log accordingly
@@ -116,6 +120,8 @@ $(function(){
 			arrayHolder = [];
 		}
 		updateChat(arrayHolder);
+	}, function(error){
+		console.log("Error code is " + error);
 	});
 
 	//Listens to changes in the Turn and behaves accordingly on each change
@@ -185,6 +191,8 @@ $(function(){
 			})
 			checkWinner();
 		}
+	}, function(error){
+		console.log("Error code is " + error);
 	});
 
 	//Listens for changes in Admin chat messages, such as if a player connects or disconnects
@@ -204,6 +212,8 @@ $(function(){
 			});
 			database.ref("Chat/Message").remove();
 		}
+	}, function(error){
+		console.log("Error code is " + error);
 	})
 
 	//Handles the hover effect on the drawers
@@ -237,7 +247,9 @@ $(function(){
 				$(".p2buttons").html("<h2>" + tmpText + "</h2>");
 				database.ref('Turn').set("end");
 			}
-		});
+		}, function(error){
+		console.log("Error code is " + error);
+	});
 	});
 
 	//Handles the option to submit a name at the beginning
@@ -306,6 +318,8 @@ $(function(){
 						$(".contMain").fadeIn();
 					}, 2500);
 				}
+			}, function(error){
+				console.log("Error code is " + error);
 			});
 			
 		}
@@ -342,6 +356,8 @@ $(function(){
 				arrayHolder[arrayHolder.length] = myName + ": " + chatText;
 				database.ref("Chat").set({log: arrayHolder});
 				updateChat(arrayHolder);
+			}, function(error){
+				console.log("Error code is " + error);
 			});
 		}
 	})
@@ -373,6 +389,8 @@ $(function(){
 			p1winslosses[1] = snapshot.child("Player1/losses").val()
 			p2winslosses[0] = snapshot.child("Player2/wins").val()
 			p2winslosses[1] = snapshot.child("Player2/losses").val()
+		}, function(error){
+			console.log("Error code is " + error);
 		});
 
 		$(".p1buttons").html("<h2>" + p1hand + "</h2>").show();
