@@ -172,6 +172,11 @@ $(function(){
 				$(".p1Spot").children().html("<h2 class='unknownChoice'>?</h2>");
 			}
 
+			//exclusive code to do question mark for spectator
+			else if (myUserID !== 1){
+				$(".p1Spot").children().html("<h2 class='unknownChoice'>?</h2>");
+			}
+
 			//If the user is Player 1 or a spectator
 			else {
 				spinningIconTimer = setInterval(function(){
