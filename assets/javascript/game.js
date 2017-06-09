@@ -33,7 +33,8 @@ $(function(){
 			database.ref('Lobby').once("value").then(function(snapshot){
 				//if lobby is also totally empty, will erase chat history
 				if(!snapshot.exists()){
-					database.ref('Chat').set({log: []});
+					database.ref('Chat').remove();
+					$(".textBox").empty();
 				}
 			})
 		}
@@ -109,17 +110,6 @@ $(function(){
 			$(".p2Spot").children().html("<h5>P2</h5><h5>Click to Join</h5>");
 			$(".p2Spot").css("border", "2px dashed white");
 		}
-	}, function(error){
-		console.log("Error code is " + error);
-	});
-
-	//Listens to changes in the Chat history and updates the chat log accordingly
-	database.ref('Chat').on("value", function(snapshot){
-		var arrayHolder = snapshot.child("log").val();
-		if (!Array.isArray(arrayHolder)){
-			arrayHolder = [];
-		}
-		updateChat(arrayHolder);
 	}, function(error){
 		console.log("Error code is " + error);
 	});
@@ -200,25 +190,38 @@ $(function(){
 		console.log("Error code is " + error);
 	});
 
-	//Listens for changes in Admin chat messages, such as if a player connects or disconnects
-	database.ref("Chat/Message").on("value", function(snapshot){
+	// Listens for changes in Admin chat messages, such as if a player connects or disconnects
+	database.ref("Chat/message").on("value", function(snapshot){
 		//If there is a value of a message
 		if (snapshot.exists()){
-			var tempAdminMessage = snapshot.val();
-			//That value is appended to an array and then set.
-			database.ref('Chat/log').once("value").then(function(snapshot1){
-				var arrayHolder = snapshot1.val();
-				if (!Array.isArray(arrayHolder)){
-					arrayHolder = [];
-				}
-				arrayHolder[arrayHolder.length] = tempAdminMessage;
-				updateChat(arrayHolder);
-				database.ref('Chat/log').set(arrayHolder);
-			});
-			database.ref("Chat/Message").remove();
+			console.log("message");
+			database.ref("Chat/log").push({
+				message: snapshot.val().message
+			})
+			database.ref("Chat/message").remove();
 		}
 	}, function(error){
 		console.log("Error code is " + error);
+	})
+
+	database.ref("Chat/log").on("child_added", function(snapshot){
+		var message = snapshot.val().message;
+		var pTemp = $("<p>").text(message);
+
+		if (message.substring(0, 1) === "~") {
+			pTemp.css("color", "white")
+			.css("background-color", "#607f80");
+		}
+
+		else if(message.substring(0, myName.length) === myName && myName.length !== 0){
+			console.log("message is: " + message.substring(0, myName.length));
+			console.log("my name is " + myName);
+			pTemp.css("color", "green");
+		}
+
+
+		$(".textBox").append(pTemp);
+		$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
 	})
 
 	//Handles the hover effect on the drawers
@@ -283,9 +286,9 @@ $(function(){
 						database.ref("Names/" + myName).set(true);
 						database.ref("Names/" + myName).onDisconnect().remove();
 						
-						database.ref("Chat/Message").onDisconnect().set("~" + myName + " has disconnected~");
+						database.ref("Chat/message").onDisconnect().set({message: "~" + myName + " has disconnected~"});
 						$(".greetingH1").text("Hello, " + myName);
-						database.ref("Chat/Message").set("~" + placeholderName + " has connected~");
+						database.ref("Chat/log").push({message: "~" + placeholderName + " has connected~"});
 						database.ref("Lobby/" + myName).set(true);
 						database.ref("Lobby/" + myName).onDisconnect().remove();
 						$(".nameInputBox").attr('disabled','disabled');
@@ -299,7 +302,7 @@ $(function(){
 
 					}
 
-					//If your name is currently used
+					//If your name is currently in-use
 					else {
 						$(".enterName").text("Sorry, that name is taken");
 					}
@@ -311,8 +314,8 @@ $(function(){
 					database.ref("Names/" + myName).set(true);
 					database.ref("Names/" + myName).onDisconnect().remove();
 					$(".greetingH1").text("Hello, " + myName);
-					database.ref("Chat/Message").onDisconnect().set("~" + myName + " has disconnected~");
-					database.ref("Chat/Message").set("~" + myName + " has connected~");
+					database.ref("Chat/message").onDisconnect().set({message: "~" + myName + " has disconnected~"});
+					database.ref("Chat/log").push({message: "~" + myName + " has connected~"});
 					database.ref("Lobby/" + myName).set(true);
 					database.ref("Lobby/" + myName).onDisconnect().remove();
 					$(".nameInputBox").attr('disabled','disabled');
@@ -337,10 +340,9 @@ $(function(){
 				return;
 			}
 
-
 			myUserID = parseInt($(this).attr("data-player"));
 			addPlayer (myName, myUserID);
-			database.ref("Chat/Message").set("~" + myName + " is now Player " + myUserID + "~");
+			database.ref("Chat/log").push({message: "~" + myName + " is now Player " + myUserID + "~"});
 			database.ref('Players/Player' + myUserID).onDisconnect().remove();
 			database.ref('Lobby/' + myName).remove();
 		}
@@ -352,18 +354,9 @@ $(function(){
 		var chatText = $(".chatInput").val();
 		$(".chatInput").val("");
 		if (chatText != ""){
-			database.ref('Chat/log').once("value").then(function(snapshot){
-				var arrayHolder = snapshot.val();
-				if (!Array.isArray(arrayHolder)){
-					arrayHolder = [];
-				}
-
-				arrayHolder[arrayHolder.length] = myName + ": " + chatText;
-				database.ref("Chat").set({log: arrayHolder});
-				updateChat(arrayHolder);
-			}, function(error){
-				console.log("Error code is " + error);
-			});
+			database.ref("Chat/log").push({
+				message: myName + ": " + chatText
+			})
 		}
 	})
 
@@ -457,25 +450,6 @@ $(function(){
 		}
 
 		setTimeout(resetGame, 3000);
-	}
-
-	function updateChat(array){
-		$(".textBox").empty();
-		if (Array.isArray(array)){
-			for (var i =0; i < array.length; i++){
-				var pTemp = $("<p>").text(array[i]);
-				if(array[i].substring(0, myName.length) === myName){
-					pTemp.css("color", "green");
-				}
-
-				else if (array[i].substring(0, 1) === "~") {
-					pTemp.css("color", "white")
-					.css("background-color", "#607f80");
-				}
-				$(".textBox").append(pTemp);
-			}
-			$(".textBox").scrollTop($(".textBox")[0].scrollHeight);
-		}
 	}
 
 	function addPlayer(name, num) {
